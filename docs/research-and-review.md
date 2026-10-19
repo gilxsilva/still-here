@@ -2,6 +2,8 @@
 
 October 18, 2026
 
+This records the research and checks for version 0.4. The current monochrome design and subsequent checks are described in [Visual direction](visual-direction.md).
+
 This is desk research and a design review, followed by browser walkthroughs. No customer interviews, participant usability sessions, or market-size study have been conducted. The audiences below are hypotheses to test.
 
 ## Three likely reasons to visit

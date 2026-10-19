@@ -7,6 +7,10 @@ let dataset;
 let result;
 let currentScreen = 'start';
 let plannerOnly = false;
+let gridZoom = false;
+let gridDecade = 0;
+let navigationAnimation;
+let navigationVersion = 0;
 let requestGeneration = 0;
 const chapters = ['start', 'working', 'odds', 'weeks', 'week'];
 const labels = ['THE QUESTION', 'THE WORKING', 'THE ODDS', 'A LIFE IN WEEKS', 'THIS WEEK'];
@@ -51,9 +55,11 @@ $('#age-form').addEventListener('submit', async event => {
     if (generation !== requestGeneration) return;
     result = estimateByAge(dataset, validation.age);
     plannerOnly = false;
+    gridZoom = false;
+    gridDecade = Math.floor(result.age / 10);
     renderEstimate();
-    showScreen('working');
-    startWalkthrough();
+    setBeat(motion ? 0 : 2);
+    showScreen('working', true, startWalkthrough);
   } catch {
     if (generation !== requestGeneration) return;
     setAgeError('The numbers didn’t load. Please try again.');
@@ -71,13 +77,15 @@ function renderEstimate() {
   $('#daily-high').textContent = percent(result.daily[1]);
   $('#math-daily-range').textContent = `${percent(result.daily[0])}–${percent(result.daily[1])}%`;
   $('#million-range').textContent = compactRange(result.daily.map(p => p * 1_000_000));
+  $('#axis-low').style.left = `${result.daily[0] * 100}%`;
+  $('#axis-high').style.left = `${result.daily[1] * 100}%`;
   $('#survival-percent').textContent = `${percent(result.survival[0])}–${percent(result.survival[1])}%`;
   $('#inspect-age').value = result.age;
   renderValues(result.age);
   renderLifeGrid();
 }
 
-function showScreen(id, focus = true) {
+function applyScreen(id, focus = true) {
   if (!chapters.includes(id)) return;
   if (['working', 'odds', 'weeks'].includes(id) && !result) return;
   if (id !== 'working') stopTimer();
@@ -97,6 +105,30 @@ function showScreen(id, focus = true) {
   const arrow = document.createElement('span'); arrow.setAttribute('aria-hidden', 'true'); arrow.textContent = '→';
   $('#story-next').append(arrow);
   if (focus) $(`[data-screen="${id}"]`).querySelector('h1, h2').focus({ preventScroll: true });
+}
+function showScreen(id, focus = true, afterUpdate) {
+  if (!chapters.includes(id) || (['working', 'odds', 'weeks'].includes(id) && !result)) return Promise.resolve();
+  const version = ++navigationVersion;
+  navigationAnimation?.cancel();
+  const update = () => {
+    if (version !== navigationVersion) return;
+    applyScreen(id, focus);
+    afterUpdate?.();
+  };
+  const outgoing = $(`[data-screen="${currentScreen}"]`);
+  if (motion && currentScreen !== id && outgoing.animate) {
+    navigationAnimation = outgoing.animate(
+      [{ opacity: 1, transform: 'translateY(0)' }, { opacity: 0, transform: 'translateY(-6px)' }],
+      { duration: 160, easing: 'ease-out', fill: 'forwards' }
+    );
+    const animation = navigationAnimation;
+    return animation.finished.catch(() => {}).then(() => {
+      animation.cancel();
+      update();
+    });
+  }
+  update();
+  return Promise.resolve();
 }
 function nextScreen() {
   if (currentScreen === 'start') { $('#age-form').requestSubmit(); return; }
@@ -159,11 +191,12 @@ $('#math-pause').addEventListener('click', () => {
   else pauseWalkthrough();
 });
 $('#math-replay').addEventListener('click', startWalkthrough);
-$('#replay-from-result').addEventListener('click', () => { showScreen('working'); startWalkthrough(); });
+$('#replay-from-result').addEventListener('click', () => { setBeat(motion ? 0 : 2); showScreen('working', true, startWalkthrough); });
 // No auto-advancing a hidden tab, and no surprise restart when the visitor returns.
 document.addEventListener('visibilitychange', () => { if (document.hidden && currentScreen === 'working') pauseWalkthrough(); });
 function applyMotion() {
   document.body.dataset.motion = motion ? 'on' : 'off';
+  if (!motion) navigationAnimation?.cancel();
   $('#motion-toggle').textContent = motion ? 'Motion on' : 'Motion off';
   $('#motion-toggle').setAttribute('aria-label', 'Reduce motion');
   $('#motion-toggle').setAttribute('aria-pressed', String(!motion));
@@ -186,38 +219,93 @@ function renderLifeGrid() {
   const weeks = lifeWeeks(result);
   $('#remaining-weeks').textContent = compactRange(weeks.remaining, 0);
   $('#remaining-years').textContent = compactRange(result.remainingYears, 1);
-  $('#life-end-label').textContent = 'HIGHER TABLE AVERAGE';
   const grid = $('#life-grid');
   grid.querySelectorAll('[data-grid]').forEach(node => node.remove());
-  const columns = 104, pitch = 7, size = 4.8;
-  const rows = Math.ceil(weeks.total / columns);
-  grid.setAttribute('viewBox', `0 0 ${columns * pitch} ${rows * pitch}`);
-  $('#life-grid-description').textContent = `Approximate weeks: ${weeks.lived} lived, ${weeks.remaining[0]} to ${weeks.remaining[1]} average weeks ahead in the two tables. One square is one week; each row is about two years. The endpoints compare means, not the bounds of a lifespan.`;
+  const lastDecade = Math.floor((weeks.total - 1) / 520);
+  gridDecade = Math.max(0, Math.min(lastDecade, gridDecade));
+  $('#grid-zoom').textContent = gridZoom ? 'Whole life −' : 'Look closer +';
+  $('#grid-zoom').setAttribute('aria-pressed', String(gridZoom));
+  $('#life-decade-prev').hidden = !gridZoom;
+  $('#life-decade-next').hidden = !gridZoom;
+  $('#life-decade-prev').disabled = gridDecade === 0;
+  $('#life-decade-next').disabled = gridDecade === lastDecade;
+  const lowerYear = gridDecade * 10;
+  const upperYear = Math.min(lowerYear + 9, Math.ceil(weeks.total / 52) - 1);
+  $('#life-end-label').textContent = gridZoom ? `AGES ${lowerYear}–${upperYear}` : 'A LIFE, IN DECADES';
+  $('#life-grid-description').textContent = `${gridZoom ? `Close view of ages ${lowerYear} to ${upperYear}.` : 'Weeks grouped into ten-year chapters.'} Approximately ${weeks.lived} weeks lived and ${weeks.remaining[0]} to ${weeks.remaining[1]} average weeks ahead in the two tables. Each square is a week; each row is a year. The endpoints compare means, not lifespan bounds. The diamond marks your approximate current age.`;
   const defs = svgElement('defs', { 'data-grid': '' });
-  const pattern = svgElement('pattern', { id: 'week-hatch', width: 4, height: 4, patternUnits: 'userSpaceOnUse' });
-  pattern.append(svgElement('rect', { width: 4, height: 4, fill: '#e0ebe3' }), svgElement('path', { d: 'M-1 1L1-1M0 4L4 0M3 5L5 3', stroke: '#87ac9c', 'stroke-width': 1.3 }));
-  defs.append(pattern); grid.append(defs);
+  const hatch = svgElement('pattern', { id: 'week-hatch', width: 4, height: 4, patternUnits: 'userSpaceOnUse' });
+  hatch.append(svgElement('rect', { width: 4, height: 4, fill: '#fff' }), svgElement('path', { d: 'M-1 1L1-1M0 4L4 0M3 5L5 3', stroke: '#888', 'stroke-width': 1 }));
+  defs.append(hatch); grid.append(defs);
+  const columns = gridZoom ? 1 : window.matchMedia('(max-width:760px)').matches ? 2 : 3;
+  const first = gridZoom ? gridDecade : 0;
+  const count = gridZoom ? 1 : lastDecade + 1;
+  const pitchX = gridZoom ? 12 : 7;
+  const pitchY = gridZoom ? 22 : 7;
+  const size = gridZoom ? 8 : 4.7;
+  const labelWidth = gridZoom ? 44 : 0;
+  const panelWidth = 52 * pitchX + labelWidth;
+  const panelHeight = gridZoom ? 10 * pitchY + 10 : 10 * pitchY + 42;
+  const gutter = gridZoom ? 0 : 34;
+  grid.setAttribute('viewBox', `0 0 ${columns * panelWidth + (columns - 1) * gutter} ${Math.ceil(count / columns) * panelHeight}`);
   const group = svgElement('g', { 'data-grid': '', 'aria-hidden': 'true' });
-  for (let row = 0; row < rows; row++) {
-    const paths = ['', '', ''];
-    for (let col = 0; col < columns; col++) {
-      const index = row * columns + col;
-      if (index >= weeks.total) break;
-      const category = index < weeks.lived ? 0 : index < weeks.lived + weeks.remaining[0] ? 1 : 2;
-      paths[category] += `M${col * pitch},${row * pitch}h${size}v${size}h-${size}z`;
+  for (let panel = 0; panel < count; panel++) {
+    const decade = first + panel;
+    const offsetX = (panel % columns) * (panelWidth + gutter);
+    const offsetY = Math.floor(panel / columns) * panelHeight;
+    const chapter = svgElement('g', { transform: `translate(${offsetX} ${offsetY})` });
+    if (!gridZoom) {
+      const endAge = Math.min(decade * 10 + 9, Math.ceil(weeks.total / 52) - 1);
+      const label = svgElement('text', { x: 0, y: 15, fill: '#555', 'font-size': 14, 'font-family': 'monospace' });
+      label.textContent = `${String(decade * 10).padStart(2, '0')}–${String(endAge).padStart(2, '0')}`;
+      chapter.append(label);
+      if (Math.floor(result.age / 10) === decade) {
+        const current = svgElement('text', { x: panelWidth - 1, y: 15, fill: '#111', 'font-size': 12, 'font-family': 'monospace', 'text-anchor': 'end' });
+        current.textContent = `AGE ${result.age}`; chapter.append(current);
+      }
     }
-    const rowGroup = svgElement('g', { class: 'life-row', style: `--row:${row}` });
-    paths.forEach((d, i) => { if (d) rowGroup.append(svgElement('path', { d, fill: ['#263a59', '#7da79b', 'url(#week-hatch)'][i] })); });
-    group.append(rowGroup);
+    const top = gridZoom ? 5 : 28;
+    const paths = ['', '', ''];
+    for (let year = 0; year < 10; year++) {
+      const yearStart = decade * 520 + year * 52;
+      if (yearStart >= weeks.total) break;
+      if (gridZoom) {
+        const label = svgElement('text', { x: 0, y: top + year * pitchY + size, fill: '#555', 'font-size': 16, 'font-family': 'monospace' });
+        label.textContent = decade * 10 + year; chapter.append(label);
+      }
+      for (let week = 0; week < 52; week++) {
+        const index = yearStart + week;
+        if (index >= weeks.total) break;
+        const kind = index < weeks.lived ? 0 : index < weeks.lived + weeks.remaining[0] ? 1 : 2;
+        const x = labelWidth + week * pitchX, y = top + year * pitchY;
+        paths[kind] += `M${x},${y}h${size}v${size}h-${size}z`;
+      }
+    }
+    paths.forEach((d, kind) => {
+      if (!d) return;
+      chapter.append(svgElement('path', { d, fill: ['#151515', '#fff', 'url(#week-hatch)'][kind], stroke: kind === 1 ? '#999' : 'none', 'stroke-width': .6 }));
+    });
+    if (Math.floor(result.age / 10) === decade) {
+      const local = weeks.lived - decade * 520;
+      const x = labelWidth + (local % 52) * pitchX + size / 2;
+      const y = top + Math.floor(local / 52) * pitchY + size / 2;
+      const mark = size + 2;
+      chapter.append(svgElement('rect', { x: x - mark / 2, y: y - mark / 2, width: mark, height: mark, transform: `rotate(45 ${x} ${y})`, fill: '#111', stroke: '#fff', 'stroke-width': 1.1 }));
+    }
+    group.append(chapter);
   }
-  const nowIndex = weeks.lived;
-  group.append(svgElement('rect', { x: (nowIndex % columns) * pitch - 1, y: Math.floor(nowIndex / columns) * pitch - 1, width: size + 2, height: size + 2, rx: 1, fill: '#dc492e', stroke: '#fff', 'stroke-width': 1 }));
   grid.append(group);
 }
+$('#grid-zoom').addEventListener('click', () => { gridZoom = !gridZoom; if (gridZoom) gridDecade = Math.floor(result.age / 10); renderLifeGrid(); });
+$('#life-decade-prev').addEventListener('click', () => { if (gridDecade > 0) { gridDecade--; renderLifeGrid(); } });
+$('#life-decade-next').addEventListener('click', () => { gridDecade++; renderLifeGrid(); });
+window.addEventListener('resize', () => { if (result) renderLifeGrid(); });
+
 const dayCells = Array.from({ length: 365 }, (_, i) => {
   const cell = document.createElement('i'); cell.style.setProperty('--row', Math.floor(i / 73)); return cell;
 });
 $('#day-grid').replaceChildren(...dayCells);
+$('#year-ruler').replaceChildren(...Array.from({ length: 365 }, () => document.createElement('i')));
 
 function renderBudget() {
   const inputs = { sleepPerNight: Number($('#sleep').value), workPerWeek: Number($('#work').value), carePerWeek: Number($('#care').value) };
@@ -233,7 +321,7 @@ function renderBudget() {
   $('#budget-note').textContent = budget.valid ? (budget.open === 0 ? 'All 168 hours are allocated. Check for overlap.' : 'These are starting values. Count each hour once.') : 'Over 168 hours. Reduce a slider or check for overlap. The grid stops at 168.';
   $('#budget-note').classList.toggle('over', !budget.valid);
   $('.budget-visual').classList.toggle('over-budget', !budget.valid);
-  const categories = [{ hours: budget.sleep, color: '#314864' }, { hours: budget.work, color: '#b6a4d9' }, { hours: budget.care, color: '#e5b479' }];
+  const categories = [{ hours: budget.sleep, color: '#151515' }, { hours: budget.work, color: '#777' }, { hours: budget.care, color: '#c9c9c9' }];
   const grid = $('#week-grid');
   // Reuse cells so slider input doesn't replay the entrance animation 168 times.
   if (!grid.children.length) grid.replaceChildren(...Array.from({ length: 168 }, (_, index) => {
@@ -247,7 +335,7 @@ function renderBudget() {
       if (right > left) stops.push(`${item.color} ${(left - index) * 100}% ${(right - index) * 100}%`);
       start = end;
     }
-    if (budget.allocated < index + 1) stops.push(`#f6dfc3 ${(Math.max(index, budget.allocated) - index) * 100}% 100%`);
+    if (budget.allocated < index + 1) stops.push(`#fff ${(Math.max(index, budget.allocated) - index) * 100}% 100%`);
     cell.style.background = `linear-gradient(to right, ${stops.join(', ')})`;
   });
   grid.setAttribute('aria-label', `168-hour week: ${budget.sleep} hours sleep, ${budget.work} work and study, ${budget.care} essentials. ${budget.valid ? `${budget.open} hours unallocated.` : `Over budget by ${budget.over} hours. Grid capped at 168.`}`);

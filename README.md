@@ -42,19 +42,21 @@ At age 25, the two tables give about **0.00017%–0.00044% per day**, or **1.7�
 
 The range compares the female and male tables, so the first version can ask for age alone. It isn’t a confidence interval or a personal prediction. We use age at last birthday to choose a row and leave out health, behavior, seasons, leap years, and the timing of the next birthday. The full assumptions are in the app’s “How it works” pages.
 
-The life-in-weeks grid uses each table’s average remaining years at the entered age, multiplied by 52 and rounded. It compares two means, not two bounds on your lifespan. It does not subtract your age from life expectancy at birth.
+The life-in-weeks grid groups its weeks into decades. “Look closer” opens one decade with labeled year rows and previous/next controls. It uses each table’s average remaining years at the entered age, multiplied by 52 and rounded. It compares two means, not two bounds on your lifespan. It does not subtract your age from life expectancy at birth.
 
 The weekly sliders are a separate exercise. Their defaults are starting values, not population averages. Change them to match your week.
 
 ## The design
 
-Five views: your age, the working, the odds, a life in weeks, and this week. A short note introduces the sensitive topic; anyone can skip straight to the weekly planner. The header steps aside after age entry. Blue, green, and warmer colors give each part its own feel.
+Five views: your age, the working, the odds, a life in weeks, and this week. A short note introduces the sensitive topic; anyone can skip straight to the weekly planner. The header steps aside after age entry. The design stays in black, white, and grayscale. Instrument Serif carries the headings; fine rules and small annotations give the pages the feel of a printed essay. The year ruler, calculation sheet, probability axis, and week grids each explain a different scale of time.
+
+[Current visual direction](docs/visual-direction.md) explains the references, typography, interactions, and verification for this version.
 
 [Research and design review](docs/research-and-review.md) covers the audience hypotheses, design decisions, sources, browser checks, and what still needs real-user testing.
 
 ## What’s in the repo
 
-- `src/`: the pages, styles, calculations, and pinned source data.
+- `src/`: the pages, styles, calculations, pinned source data, and bundled typeface. The font license is included in `docs/` and the standalone export.
 - `scripts/`: the build and local preview.
 - `docs/`: research, design decisions, and the self-review.
 - `tests/`: checks for the calculations, source values, and HTML export.

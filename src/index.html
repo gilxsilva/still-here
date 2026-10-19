@@ -5,22 +5,23 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="light">
   <meta name="description" content="What are the odds I die tomorrow? One age, a little probability, and a different way to look at your week.">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; font-src 'self' data:; object-src 'none'; base-uri 'self'; form-action 'none'">
   <meta name="referrer" content="no-referrer">
   <title>Still Here: What are the odds?</title>
   <link rel="icon" href="./favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="./typefaces.css">
   <link rel="stylesheet" href="./styles.css">
   <script src="./app.js" type="module"></script>
 </head>
 <body data-scene="start" data-motion="on">
   <a class="skip-link" href="#main">Skip to the story</a>
-  <header class="header"><button class="brand" type="button" data-home aria-label="Still Here, back to beginning"><span aria-hidden="true">◕</span> still here.</button><span>A QUESTION FROM PROBABILITY CLASS</span><button class="quiet-button" type="button" data-method="source">Where do the numbers come from? ↗</button></header>
+  <header class="header"><button class="brand" type="button" data-home aria-label="Still Here, back to beginning">still here.</button><span>A QUESTION FROM PROBABILITY CLASS</span><button class="quiet-button" type="button" data-method="source">Where do the numbers come from? ↗</button></header>
   <main id="main" tabindex="-1">
     <section class="screen start-screen" data-screen="start" aria-labelledby="hero-title">
       <div class="hero-copy">
-        <p class="eyebrow"><span class="little-dot"></span> A LITTLE PROBABILITY. ABOUT YOU.</p>
+        <p class="eyebrow">AN EXERCISE IN PROBABILITY</p>
         <h1 id="hero-title" tabindex="-1"><span class="reveal-line">What are the odds</span><span class="reveal-line">I die <em>tomorrow?</em></span></h1>
-        <p class="intro">A big question. A surprisingly small number.<br>Let’s see how we get there.</p>
+        <p class="intro">Enter your age. We’ll work it out.</p>
         <form id="age-form" novalidate>
           <label for="age">How old are you?</label>
           <div class="age-entry"><input id="age" type="number" min="18" max="100" step="1" inputmode="numeric" placeholder="Your age" autocomplete="off" required aria-describedby="age-help age-error"><span>years</span><button class="primary-button" id="begin" type="submit">Find my odds <span aria-hidden="true">↗</span></button></div>
@@ -29,10 +30,10 @@
         </form>
         <div class="topic-note"><span aria-hidden="true">i</span><p>This explores death and life expectancy using population averages. Take it at your own pace. <button type="button" class="inline-button" id="skip-mortality">Skip to my week ↗</button></p></div>
       </div>
-      <div class="hero-art" aria-hidden="true"><div class="orbit-label">A YEAR → A DAY → THIS MOMENT</div><div class="orbital"><div class="orbit-ring ring-one"></div><div class="orbit-ring ring-two"></div><div class="orbit-ring ring-three"></div><span class="orbit-bead"></span><div class="orbital-core"><span>24</span><small>HOURS AHEAD</small></div></div><div class="floating-note"><span class="note-spark">✳</span><span>The math is simple.<br>The perspective is the interesting part.</span></div><div class="art-footer"><span>ONE AGE IN.</span><span>A DIFFERENT WAY TO SEE TIME.</span></div></div>
+      <div class="hero-art" aria-hidden="true"><div class="ruler-caption"><span>ONE DAY</span><span>A YEAR HAS 365 OF THEM.</span></div><div class="year-ruler" id="year-ruler"></div><div class="ruler-footnote"><span>01</span><span>365</span></div></div>
     </section>
     <section class="screen working-screen" data-screen="working" hidden aria-labelledby="working-title">
-      <div class="working-heading"><p class="eyebrow">FROM A YEAR TO A DAY <span class="step-counter" id="math-counter">01 / 03</span></p><h2 id="working-title" tabindex="-1">Here’s the <em>working.</em></h2><p class="body-copy">Your result is ready. The walkthrough plays automatically. Pause or skip it anytime.</p></div>
+      <div class="working-heading"><p class="eyebrow">FROM A YEAR TO A DAY <span class="step-counter" id="math-counter">01 / 03</span></p><h2 id="working-title" tabindex="-1">From a year<br> to <em>a day.</em></h2><p class="body-copy">Your result is ready. The walkthrough plays automatically. Pause or skip it anytime.</p></div>
       <div class="working-layout"><ol class="math-steps" aria-label="Calculation steps">
         <li data-beat="0"><span class="step-number">01</span><div><h3>Start with a year.</h3><p>At age <span data-age></span>, the SSA tables give the probability of dying within a year. Call it <var>q</var>.</p><span class="math-tag">A probability, given your age</span></div></li>
         <li data-beat="1"><span class="step-number">02</span><div><h3>Multiply the days.</h3><p>Surviving a day has probability 1 − p. Keep that daily rate constant, and multiply across 365 days.</p><span class="math-tag">Complement + chain rule</span></div></li>
@@ -40,22 +41,23 @@
       </ol><div class="formula-stage" id="formula-stage" data-beat="0"><div class="formula-topline"><span id="formula-label">THE YEARLY PROBABILITY</span><span>AGE <span data-age></span></span></div>
         <div class="formula-scene" data-formula="0"><span class="formula-symbol">q</span><div class="annual-value" id="annual-range"></div><p>chance of dying within one year</p></div>
         <div class="formula-scene" data-formula="1" hidden><div class="equation">(1 − p)<sup>365</sup> = 1 − q</div><div class="day-grid" id="day-grid" aria-hidden="true"></div><p>365 conditional survival probabilities</p></div>
-        <div class="formula-scene" data-formula="2" hidden><div class="equation">p = 1 − (1 − q)<sup>1/365</sup></div><div class="daily-answer" id="math-daily-range"></div><p>estimated chance over the next 24 hours</p></div>
+        <div class="formula-scene" data-formula="2" hidden><span class="single-day" aria-hidden="true"></span><div class="equation">p = 1 − (1 − q)<sup>1/365</sup></div><div class="daily-answer" id="math-daily-range"></div><p>estimated chance over the next 24 hours</p></div>
         <div class="formula-bottomline"><span class="little-dot"></span> 2023 SSA tables · Constant daily risk assumed</div></div></div>
       <div class="math-playback"><div class="beat-progress" aria-hidden="true"><span></span><span></span><span></span></div><button class="quiet-button" id="math-pause" type="button">Pause walkthrough Ⅱ</button><button class="quiet-button" id="math-replay" type="button">Replay ↺</button></div><p class="sr-only" id="math-announcement" role="status"></p>
     </section>
     <section class="screen odds-screen" data-screen="odds" hidden aria-labelledby="result-title">
-      <p class="eyebrow">THE NEXT 24 HOURS / AGE <span data-age></span></p><h2 id="result-title" tabindex="-1">Tomorrow, <em>in numbers.</em></h2>
+      <p class="eyebrow">THE NEXT 24 HOURS / AGE <span data-age></span></p><h2 id="result-title" tabindex="-1">For the next <em>24 hours.</em></h2>
       <div class="odds-number" aria-label="Estimated daily probability"><span><span id="daily-low"></span><small>%</small></span><span class="range-word">to</span><span><span id="daily-high"></span><small>%</small></span></div><p class="odds-description">Estimated chance of dying in the next day, given that you’re alive now.</p>
+      <div class="probability-axis" aria-label="Both daily probabilities on a scale from zero to one hundred percent"><div class="axis-track"><i id="axis-low"></i><i id="axis-high"></i></div><div class="axis-labels"><span>0%</span><span>THE WHOLE PROBABILITY SCALE</span><span>100%</span></div></div>
       <div class="perspective-strip"><div><span class="mini-label">PUT IT IN A CROWD</span><p>About <strong id="million-range"></strong> out of <strong>1 million</strong><br>people over one day.</p></div><span class="strip-rule"></span><div><span class="mini-label">THE OTHER SIDE OF THAT NUMBER</span><p><strong id="survival-percent"></strong><br>chance of surviving the day in these groups.</p></div></div>
       <p class="fine-print odds-caveat">The range compares the female and male SSA tables. It is not a confidence interval or your personal risk.</p><button class="inline-button replay-link" type="button" id="replay-from-result">See the working again ↺</button>
     </section>
     <section class="screen weeks-screen" data-screen="weeks" hidden aria-labelledby="weeks-title">
-      <div class="weeks-heading"><p class="eyebrow">ZOOM OUT A LITTLE</p><h2 id="weeks-title" tabindex="-1">A life. <em>In weeks.</em></h2><p class="body-copy">Each square is one week. Each row is about two years.</p></div>
-      <div class="weeks-layout"><div class="weeks-copy"><div class="week-stat"><span id="remaining-weeks"></span><small>average weeks ahead<br>in these two tables</small></div><p class="body-copy">At age <span data-age></span>, that’s about <strong id="remaining-years"></strong> more years if 2023 mortality rates continued.</p><p class="boundary-note">These are two population averages. Your life can be shorter or longer. This grid has no way to know.</p><button class="inline-button" type="button" data-method="limits">How are the weeks counted? ↗</button></div><figure class="life-figure"><div class="life-scale"><span>BIRTH</span><span id="life-end-label"></span></div><svg id="life-grid" role="img" aria-labelledby="life-grid-title life-grid-description"><title id="life-grid-title">A life in weeks</title><desc id="life-grid-description"></desc></svg><figcaption><span><i class="swatch lived"></i>Years lived</span><span><i class="swatch ahead"></i>To lower average</span><span><i class="swatch between"></i>Between averages</span><span><i class="swatch now"></i>Near your age</span></figcaption><p class="fine-print">Approximate: 52 weeks per year. The grid ends at the higher table average, not a lifespan limit.</p></figure></div>
+      <div class="weeks-heading"><p class="eyebrow">ZOOM OUT A LITTLE</p><h2 id="weeks-title" tabindex="-1">A life, <em>in weeks.</em></h2><p class="body-copy">One square per week. A decade in each chapter.</p></div>
+      <div class="weeks-layout"><div class="weeks-copy"><div class="week-stat"><span id="remaining-weeks"></span><small>average weeks ahead<br>in these two tables</small></div><p class="body-copy">At age <span data-age></span>, that’s about <strong id="remaining-years"></strong> more years if 2023 mortality rates continued.</p><p class="boundary-note">These are two population averages. Your life can be shorter or longer. This grid has no way to know.</p><button class="inline-button" type="button" data-method="limits">How are the weeks counted? ↗</button></div><figure class="life-figure"><div class="life-scale"><span id="life-end-label">A LIFE IN DECADES</span><div class="grid-tools"><button type="button" id="life-decade-prev" aria-label="Previous decade" hidden>←</button><button type="button" id="life-decade-next" aria-label="Next decade" hidden>→</button><button type="button" id="grid-zoom" aria-pressed="false">Look closer +</button></div></div><svg id="life-grid" role="img" aria-labelledby="life-grid-title life-grid-description"><title id="life-grid-title">A life in weeks, grouped by decade</title><desc id="life-grid-description"></desc></svg><figcaption><span><i class="swatch lived"></i>Lived</span><span><i class="swatch ahead"></i>To lower mean</span><span><i class="swatch between"></i>Between means</span><span><i class="swatch now"></i>Near your age</span></figcaption><p class="fine-print">Approximate: 52 weeks per year. The grid ends at the higher table average, not a lifespan limit.</p></figure></div>
     </section>
     <section class="screen week-screen" data-screen="week" hidden aria-labelledby="week-title">
-      <div class="week-heading"><div><p class="eyebrow">COME BACK TO SOMETHING YOU CAN CHANGE</p><h2 id="week-title" tabindex="-1">What about <em>this week?</em></h2></div><p class="body-copy">168 hours. Move things around.</p></div>
+      <div class="week-heading"><div><p class="eyebrow">A SMALLER QUESTION</p><h2 id="week-title" tabindex="-1">And this <em>one week?</em></h2></div><p class="body-copy">168 hours. Move things around.</p></div>
       <div class="week-layout"><div class="budget-visual"><div class="budget-top"><span class="mini-label">ONE SQUARE = ONE HOUR</span><span class="budget-answer"><strong id="open-hours">51</strong> <span id="open-hours-label">hours unallocated</span></span></div><div id="week-grid" class="week-grid" role="img" aria-label="Weekly time budget"></div><div class="week-legend"><span><i class="swatch sleep"></i>Sleep</span><span><i class="swatch work"></i>Work / study</span><span><i class="swatch care"></i>Essentials</span><span><i class="swatch open"></i>Unallocated</span></div><p class="fine-print" id="budget-note" aria-live="polite">These are starting values. Count each hour once.</p></div><div class="time-controls">
         <div class="slider-group"><div><label for="sleep">Sleep</label><output id="sleep-value" for="sleep">8 h / night</output></div><input type="range" id="sleep" min="0" max="12" step="0.5" value="8"></div>
         <div class="slider-group"><div><label for="work">Work &amp; study</label><output id="work-value" for="work">40 h / week</output></div><input type="range" id="work" min="0" max="100" step="1" value="40"></div>

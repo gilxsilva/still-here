@@ -18,6 +18,10 @@ test('portable export embeds the app and data, validates its script, and blocks 
     assert.ok(!script.includes("fetch('./data/"));
     assert.ok(!/^import /m.test(script));
     assert.ok(!html.includes('href="./styles.css"'));
+    assert.ok(!html.includes('href="./typefaces.css"'));
+    assert.equal((html.match(/data:font\/woff2;base64,/g) || []).length, 2);
+    assert.ok(!html.includes("url('./fonts/"));
+    assert.ok(html.includes("font-src 'self' data:"));
     assert.ok(!html.includes('src="./app.js"'));
     assert.ok(html.includes("connect-src 'none'"));
     const hash = createHash('sha256').update(script).digest('base64');
