@@ -2,7 +2,7 @@
 
 A little probability. A little perspective.
 
-A private, age-only prototype that explains an estimated daily mortality probability, makes the calculation inspectable, and invites the visitor to make room for one good hour. The monochrome experience moves from **the odds → the math → a week → today**.
+A private, age-only prototype that explains an estimated daily mortality probability, makes the calculation inspectable, and invites the visitor to make room for one good hour. The monochrome experience is an eight-screen story: **age → odds → annual probability → one assumption → daily probability → age curve → a week → today**. Next and Back replace the full view; the document does not scroll.
 
 ## Run locally
 
@@ -13,6 +13,8 @@ npm start
 ```
 
 Open http://127.0.0.1:4173. Use `npm run check` for syntax checks and the calculation tests. `PORT=4180 npm start` selects another local port.
+
+For a portable preview, run `npm run export`. It generates both `dist/index.html` and `../still-here.html` as identical self-contained pages you can open directly from your computer with no server, installation, or network connection. The source data and app are embedded, and their content security policy disallows network connections. Edit the HTML template in `src/index.html`; the start command rebuilds the exports automatically.
 
 ## The numbers
 
@@ -28,13 +30,15 @@ Open http://127.0.0.1:4173. Use `npm run check` for syntax checks and the calcul
 ## Structure and extension
 
 ```text
-dist/index.html          Semantic narrative and source notes
+src/index.html           Editable story template and source notes
+dist/index.html          Generated self-contained story
 dist/styles.css         Responsive monochrome design and reduced-motion rules
 dist/app.js             UI, source loading, chart, weekly budget, reflection
 dist/model.js           Pure validated calculation functions and result contract
 dist/data/ssa-2023.json  Pinned source values and provenance metadata
 tests/model.test.mjs    Mathematical identities, source fixtures, edge cases
 scripts/serve.mjs        Loopback-only static development server
+scripts/export.mjs       Self-contained offline HTML export
 QA.md                   Self-review, evidence, and launch gaps
 ```
 
@@ -50,6 +54,8 @@ The private hosting configuration is in `.openai/hosting.json`. `dist/` is the c
 
 ## Design intent
 
-One age entry begins the exploration. Results are immediate, with no fake processing delay. A user-initiated transition brings the result into view and moves focus to its heading. Subsequent navigation remains user-controlled. The chart has a keyboard-operable age slider and a full table equivalent. Budget updates and the final reflection expose accessible status text. Motion respects `prefers-reduced-motion`.
+One age entry begins the story. Each view occupies the available viewport with fixed Back/Next controls and a progress indicator. Only the current screen is visible or focusable. Next/Back preserve age, chart position, budget, and reflection. There is no document scrolling, scroll-triggered progression, or artificial delay.
 
-See [QA.md](QA.md) for the private-review readiness assessment and the checks that remain before a public release.
+The math is split into three focused screens. Method notes occupy five additional screens and return to the point where the visitor left the story. The full chart table is paginated into groups of five ages. There are no scrolling panels. Arrow keys navigate when focus is not on a control; sliders retain their native arrow-key behavior. Escape returns from the method pages. Each transition focuses the incoming heading, and reduced-motion preferences disable the transition.
+
+See [QA.md](QA.md) for the private-review readiness assessment and remaining launch checks.

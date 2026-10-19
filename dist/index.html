@@ -1,0 +1,424 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <meta name="description" content="A little probability. A little perspective. An interactive story about tomorrow and making time.">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-4j4o0Itqiwk0KKric4Bl4Ef43A1XKLU7tJIErAcVdMI='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'none'; object-src 'none'; base-uri 'self'; form-action 'none'">
+  <meta name="referrer" content="no-referrer">
+  <title>Still Here — A little perspective.</title>
+  <link rel="icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+PHJlY3Qgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiByeD0iMTYiIGZpbGw9IiMxMTEiLz48Y2lyY2xlIGN4PSIzMiIgY3k9IjMyIiByPSIxOCIgZmlsbD0iI2ZmZiIvPjxwYXRoIGQ9Ik0zMiAxNGExOCAxOCAwIDAgMSAxOCAxOEgzMloiIGZpbGw9IiMxMTEiLz48L3N2Zz4K" type="image/svg+xml">
+  <style>:root{--ink:#171717;--muted:#696966;--soft:#85857f;--line:#dcdcd7;--paper:#fafaf7;--wash:#f0f0eb;--ease:cubic-bezier(.22,1,.36,1);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;color:var(--ink);background:var(--paper);font-synthesis:none;-webkit-font-smoothing:antialiased}*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;overscroll-behavior:none}body{height:100dvh;display:grid;grid-template-rows:80px minmax(0,1fr) 88px}button,input{font:inherit;color:inherit}button{cursor:pointer;border:0;background:none;touch-action:manipulation}button:disabled{opacity:.35;cursor:default}button,input,a{-webkit-tap-highlight-color:transparent}button:focus-visible,input:focus-visible,a:focus-visible{outline:2px solid var(--ink);outline-offset:5px}input{min-width:0}h1,h2,h3,p,figure{margin:0}h1,h2{font-weight:500;letter-spacing:-.065em;word-spacing:.055em;line-height:1.04}h1{font-size:clamp(50px,6.1vw,88px)}h2{font-size:clamp(48px,5.5vw,80px)}[tabindex="-1"]:focus{outline:none}p{line-height:1.6}a{color:inherit;text-decoration-thickness:1px;text-underline-offset:4px}::selection{background:#deded5}[hidden]{display:none!important}.soft{color:var(--soft)}.eyebrow,.visual-caption{font-size:10px;letter-spacing:.16em;font-weight:500;line-height:1.5}.intro{font-size:17px;line-height:1.6;color:var(--muted)}.body-copy{font-size:14px;color:var(--muted);line-height:1.7}.fine-print{font-size:11px;color:var(--muted);line-height:1.65}.header{display:flex;align-items:center;justify-content:space-between;padding:0 48px;gap:24px;border-bottom:1px solid var(--line)}.brand{font-size:25px;font-weight:600;letter-spacing:-.055em;display:flex;gap:9px;align-items:center;padding:0;min-height:44px;white-space:nowrap}.brand-symbol{font-weight:400;font-size:30px}.header-caption{font-size:9px;letter-spacing:.14em;color:var(--muted)}.header-link{font-size:12px;display:flex;gap:18px;align-items:center;min-height:44px;padding:0}.header-link span{font-size:19px}.header-link:hover{text-decoration:underline;text-underline-offset:4px}.skip-link{position:fixed;z-index:20;left:12px;top:-80px;background:var(--ink);color:white;padding:12px}.skip-link:focus{top:12px}main{min-height:0;min-width:0;position:relative;overflow:hidden}.screen{width:min(1280px,calc(100% - 112px));height:100%;margin:auto;padding-block:clamp(24px,5vh,60px);min-height:0;display:flex;flex-direction:column;justify-content:center;gap:22px;animation:arrive .35s var(--ease) both}main[data-direction="back"] .screen{animation-name:arrive-back}@keyframes arrive{from{opacity:0;transform:translateX(24px)}to{opacity:1;transform:translateX(0)}}@keyframes arrive-back{from{opacity:0;transform:translateX(-24px)}to{opacity:1;transform:translateX(0)}}.hero-screen,.math-screen{display:grid;grid-template-columns:1.2fr 1fr;align-items:center;gap:70px}.hero-copy h1{margin-top:30px;white-space:nowrap}.hero-copy .intro{margin-top:27px}#age-form{margin-top:35px;max-width:385px}label{font-size:12px}.age-entry{display:flex;align-items:center;border-bottom:1px solid var(--ink);padding:8px 0 12px;gap:16px;margin-top:6px}.age-entry input{width:95px;font-size:52px;letter-spacing:-.055em;background:none;border:0;padding:0;border-radius:0;appearance:textfield;-moz-appearance:textfield}.age-entry input::-webkit-inner-spin-button,.age-entry input::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}.age-entry input::placeholder{color:#777771}.age-entry>span{font-size:14px;color:var(--muted);margin-right:auto}.circle-button{border-radius:50%;background:var(--ink);color:white;display:grid;place-items:center;font-size:25px;width:52px;height:52px;flex-shrink:0;transition:background .2s,transform .2s}.circle-button:hover{background:#444;transform:rotate(10deg)}#age-help{font-size:10px;margin-top:12px}.field-error{font-size:12px;margin-top:8px;line-height:1.5}.field-error:empty{display:none}.day-art{position:relative;aspect-ratio:1/1.08;width:100%;max-height:100%;overflow:hidden;isolation:isolate}.art-top,.art-bottom{position:absolute;left:0;right:0;display:flex;justify-content:space-between;font-size:8px;letter-spacing:.12em;color:var(--muted)}.art-top{top:0}.art-bottom{bottom:0;padding-top:15px;border-top:1px solid var(--line)}.orbit{position:absolute;left:50%;top:47%;border:1px solid #d0d0c9;border-radius:50%;transform:translate(-50%,-50%);aspect-ratio:1}.outer{width:92%}.middle{width:72%;border-color:#ddddd5}.inner{width:52%;border-style:dashed}.art-center{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;transform:translateY(-3%)}.art-number{font-size:clamp(100px,11vw,160px);letter-spacing:-.085em;font-weight:400;line-height:1.15;margin-left:-.05em}.art-center>span:last-child{font-size:8px;letter-spacing:.17em;color:var(--muted);margin-top:10px}.orbit-point{position:absolute;left:50%;top:47%;width:92%;aspect-ratio:1;transform:translate(-50%,-50%);border-radius:50%;animation:orbit-turn 100s linear infinite}.orbit-point:before{content:"";position:absolute;top:14.2%;right:14.2%;width:12px;height:12px;background:var(--ink);border-radius:50%;transform:translate(50%,-50%);box-shadow:0 0 0 7px var(--paper)}@keyframes orbit-turn{to{transform:translate(-50%,-50%) rotate(360deg)}}.odds-screen{gap:20px}.odds-screen>.intro{font-size:14px}.probability-display{display:flex;align-items:baseline;gap:.2em;font-size:clamp(38px,6.7vw,96px);letter-spacing:-.065em;line-height:1.2;font-weight:450;font-variant-numeric:tabular-nums;white-space:nowrap;padding-bottom:20px;border-bottom:1px solid var(--ink)}.range-dash{color:#999992;font-weight:200}.percent-sign{font-size:.5em;margin-left:-.1em;color:var(--muted)}.frequency{font-size:15px}.survival-line{font-size:14px;max-width:780px}.result-caveat{max-width:760px}.math-copy{display:flex;flex-direction:column;gap:25px}.math-copy .body-copy{max-width:365px}.math-visual{display:flex;flex-direction:column;gap:35px;align-items:center;justify-content:center;text-align:center;min-width:0}.visual-caption{font-size:9px;color:var(--muted)}.annual-number{font-size:clamp(28px,3.3vw,46px);font-weight:450;letter-spacing:-.055em;white-space:nowrap}.year-line{display:flex;align-items:center;gap:18px;width:100%;font-size:9px;color:var(--muted);letter-spacing:.1em}.year-line i{flex:1;border-top:1px solid var(--ink)}.equation{font-family:Georgia,"Times New Roman",serif;font-size:clamp(25px,3.1vw,43px);letter-spacing:-.025em;white-space:nowrap}sup{font-size:.6em}.day-strip{display:flex;gap:10px;align-items:center;justify-content:center}.day-strip i{height:32px;width:24px;border:1px solid #9f9f97}.day-strip i:first-child{background:var(--ink);border-color:var(--ink)}.day-strip span{font-size:24px;color:var(--muted)}.math-answer{font-size:23px;letter-spacing:-.04em;font-variant-numeric:tabular-nums}.curve-screen{gap:20px}.curve-heading,.time-heading{display:flex;justify-content:space-between;align-items:end;gap:30px}.curve-heading h2{font-size:clamp(43px,4.3vw,64px);margin-top:20px}.curve-heading .body-copy{text-align:right}.chart-figure{min-height:0;max-width:900px;width:100%;margin-inline:auto;flex:1;display:flex;flex-direction:column;justify-content:center}.chart-figure svg{display:block;width:100%;min-height:0;max-height:100%;flex:1}.chart-figure figcaption{display:flex;justify-content:center;align-items:center;gap:25px;font-size:10px;color:var(--muted);min-height:30px;flex-shrink:0}.chart-figure figcaption span{display:flex;align-items:center;gap:7px}.legend-solid,.legend-dash{width:18px;border-top:1.5px solid var(--ink);display:inline-block}.legend-dash{border-top-style:dashed;border-top-color:#777}.text-button{font-size:11px;min-height:36px;padding:0;text-decoration:underline;text-underline-offset:4px}.chart-control{max-width:650px;width:100%;margin-inline:auto}.chart-control label{display:block}.chart-control output{font-weight:600}.chart-control p{font-size:11px;color:var(--muted);line-height:1.5;min-height:17px}input[type="range"]{-webkit-appearance:none;appearance:none;cursor:pointer;width:100%;height:36px;margin:0;background:transparent;--fill:50%}input[type="range"]::-webkit-slider-runnable-track{height:2px;background:linear-gradient(to right,var(--ink) var(--fill),#bdbdb5 var(--fill));border-radius:1px}input[type="range"]::-moz-range-track{height:2px;background:#bdbdb5}input[type="range"]::-moz-range-progress{height:2px;background:var(--ink)}input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;height:16px;width:16px;background:var(--ink);border-radius:50%;margin-top:-7px;box-shadow:0 0 0 4px var(--paper)}input[type="range"]::-moz-range-thumb{height:16px;width:16px;background:var(--ink);border:0;border-radius:50%}.time-screen{gap:25px}.time-heading h2{font-size:clamp(42px,4.6vw,66px);margin-top:18px}.time-layout{display:grid;grid-template-columns:1.1fr 1fr;gap:85px;align-items:center}.week-topline{display:flex;justify-content:space-between;font-size:9px;letter-spacing:.12em;margin-bottom:18px}.week-grid{display:grid;grid-template-columns:repeat(24,1fr);gap:4px;aspect-ratio:24/7}.hour-cell{border:1px solid transparent;border-radius:1px;min-width:0}.hour-cell.open{border-color:#a7a79f}.week-legend{display:flex;flex-wrap:wrap;gap:18px;font-size:9px;margin-top:20px;color:#55554f}.week-legend span{display:flex;gap:7px;align-items:center}.week-legend i{width:8px;height:8px;display:inline-block}.sleep-swatch{background:#252525}.work-swatch{background:#8a8a83}.care-swatch{background:#c8c8bf}.open-swatch{border:1px solid #a7a79f}.week-note{margin-top:20px;max-width:380px}.slider-group{margin-top:18px}.slider-group:first-child{margin-top:0}.slider-group>div{display:flex;justify-content:space-between;gap:15px;align-items:baseline}.slider-group label{font-size:12px}.slider-group output{font-size:11px;color:var(--muted);white-space:nowrap}.time-total{border-top:1px solid var(--line);margin-top:10px;padding-top:18px}.time-total>p:first-child{display:flex;align-items:baseline;gap:14px}.time-total strong{font-size:64px;font-weight:400;letter-spacing:-.07em;line-height:1.1;font-variant-numeric:tabular-nums}.time-total span{font-size:14px}.time-total>p:last-child{font-size:11px;color:var(--muted);margin-top:6px;min-height:34px}.time-total.over-budget{border-top:2px solid var(--ink)}.time-perspective{font-size:12px;color:var(--muted);border-top:1px solid var(--line);padding-top:16px}.today-screen{text-align:center;align-items:center;gap:25px}.today-screen h2{font-size:clamp(54px,6.8vw,98px)}.today-screen .intro{font-size:16px}.intention{max-width:625px;width:100%;text-align:left;margin-top:10px}.intention>label{font-size:12px}.intention-entry{display:flex;align-items:center;gap:18px;border-bottom:1px solid var(--ink);padding:12px 0}.intention-entry input{font-size:15px;border:0;background:transparent;padding:8px 0;width:100%}.intention-entry input::placeholder{color:var(--muted)}.intention-entry .circle-button{height:44px;width:44px;font-size:21px}.intention-suggestions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}.intention-suggestions button{border:1px solid var(--line);border-radius:4px;font-size:10px;min-height:44px;padding:8px 12px}.intention-suggestions button:hover,.intention-suggestions button[aria-pressed="true"]{background:var(--wash);border-color:#a7a79f}#intention-result{font-size:14px;margin-top:14px;min-height:44px;overflow-wrap:anywhere}.note-screen{gap:28px;max-width:900px}.note-copy{max-width:720px;display:flex;flex-direction:column;gap:18px}.note-copy p{font-size:15px;line-height:1.7;color:var(--muted)}.note-copy a{color:var(--ink)}.note-equation{font-family:Georgia,"Times New Roman",serif;font-size:28px;line-height:1.4}.data-screen{max-width:820px;gap:18px}.data-screen h2{font-size:48px}.data-screen table{width:100%;border-collapse:collapse;text-align:left;font-size:13px;font-variant-numeric:tabular-nums}.data-screen caption{text-align:left;padding-bottom:12px;font-size:11px;color:var(--muted)}th,td{padding:12px 10px;border-bottom:1px solid var(--line)}th{font-weight:500}.table-pager{display:flex;align-items:center;justify-content:space-between;gap:20px;font-size:11px}.table-pager button{font-size:11px;min-height:44px;padding:0}.story-footer{position:relative;border-top:1px solid var(--line);display:grid;grid-template-columns:1fr 1fr 1fr;align-items:center;padding:0 48px;gap:20px}.progress-track{position:absolute;top:-1px;left:0;right:0;height:2px;background:transparent}.progress-track span{display:block;width:12.5%;height:2px;background:var(--ink);transition:width .3s var(--ease)}.back-button{justify-self:start;min-height:44px;font-size:12px;display:flex;align-items:center;gap:10px;padding:0 10px 0 0}.next-button{justify-self:end;min-height:44px;min-width:125px;border-radius:100px;background:var(--ink);color:white;font-size:12px;padding:12px 20px;display:flex;align-items:center;justify-content:space-between;gap:25px}.next-button:hover{background:#444}.next-button>span:last-child{font-size:18px}.story-position{text-align:center;display:flex;flex-direction:column;gap:6px;white-space:nowrap}#story-step{font-size:11px;letter-spacing:.16em;font-variant-numeric:tabular-nums}#story-label{font-size:8px;letter-spacing:.13em;color:var(--muted)}.noscript{position:fixed;inset:auto 0 0;padding:20px;background:var(--paper);font-size:13px}
+@media(max-width:1100px){body{grid-template-rows:70px minmax(0,1fr) 76px}.header,.story-footer{padding-inline:32px}.screen{width:calc(100% - 72px);gap:20px}.hero-screen,.math-screen{gap:38px}h1{font-size:6vw}.hero-copy h1{margin-top:25px}.hero-copy .intro{font-size:15px}.art-number{font-size:12vw}.time-layout{gap:45px}.annual-number{font-size:3.2vw}.equation{font-size:3vw}.math-copy{gap:20px}.math-copy .intro{font-size:15px}.probability-display{font-size:7vw}}
+@media(max-width:800px){.header-caption{display:none}.screen{width:calc(100% - 48px);padding-block:30px}.header,.story-footer{padding-inline:24px}.hero-screen{gap:25px;grid-template-columns:1.2fr 1fr}.hero-copy h1{font-size:6.3vw}.hero-copy .eyebrow{font-size:8px}.hero-copy .intro{font-size:14px}#age-form{margin-top:28px}.age-entry input{font-size:46px;width:78px}.age-entry>span{font-size:12px}.art-top,.art-bottom{font-size:6px}.art-center>span:last-child{font-size:6px;letter-spacing:.1em}.math-screen{gap:30px}.math-copy h2{font-size:7vw}.math-copy .body-copy{font-size:13px}.math-visual{gap:25px}.annual-number{font-size:3.25vw}.equation{font-size:3.3vw}.visual-caption{font-size:8px}.curve-heading h2{font-size:6.5vw}.curve-heading .body-copy{font-size:12px}.time-heading{display:block}.time-heading .body-copy{margin-top:10px;font-size:13px}.time-heading h2{font-size:6vw}.time-layout{gap:30px}.week-grid{grid-template-columns:repeat(12,1fr);aspect-ratio:12/14}.week-legend{gap:10px;font-size:8px}.week-note{font-size:10px}.slider-group label{font-size:11px}.slider-group output{font-size:10px}.time-total strong{font-size:56px}.time-total span{font-size:12px}.time-perspective{font-size:11px}.odds-screen h2{font-size:8vw}.today-screen h2{font-size:9vw}.note-screen h2{font-size:7vw}}
+@media(max-width:600px){body{grid-template-rows:60px minmax(0,1fr) 72px}.header{padding-inline:20px}.brand{font-size:23px}.brand-symbol{font-size:27px}.header-link{font-size:11px;gap:12px}.screen{width:calc(100% - 40px);padding-block:24px;gap:20px}h1,h2{font-size:clamp(34px,10.4vw,58px)}.eyebrow{font-size:9px;letter-spacing:.13em}.intro{font-size:14px}.body-copy{font-size:13px}.fine-print{font-size:10px}.hero-screen{display:flex;justify-content:center;align-items:stretch}.hero-copy h1{font-size:clamp(34px,10.4vw,58px);margin-top:25px}.hero-copy .intro{margin-top:23px;font-size:14px}#age-form{max-width:100%;margin-top:32px}.age-entry input{font-size:48px;width:85px}.age-entry>span{font-size:14px}.circle-button{width:48px;height:48px}#age-help{font-size:9px}.day-art{display:none}.odds-screen{gap:20px}.odds-screen h2{font-size:11vw}.odds-screen>.intro{font-size:13px;max-width:300px}.probability-display{font-size:7.5vw;gap:.17em;padding-bottom:18px}.frequency{font-size:13px}.survival-line{font-size:12px}.result-caveat{font-size:10px}.math-screen{display:flex;gap:35px;align-items:stretch}.math-copy{gap:20px}.math-copy h2{font-size:11vw}.math-copy .intro{font-size:14px}.math-copy .body-copy{font-size:13px;max-width:100%}.math-visual{gap:24px;text-align:left;align-items:stretch}.visual-caption{font-size:8px}.annual-number{font-size:9vw}.year-line{font-size:8px}.equation{font-size:7.4vw}.math-answer{font-size:6vw}.math-visual .fine-print{font-size:10px}.day-strip{justify-content:start}.day-strip i{height:27px;width:20px}.curve-screen{gap:20px}.curve-heading{display:block}.curve-heading h2{font-size:10vw;margin-top:18px}.curve-heading .body-copy{text-align:left;margin-top:14px;font-size:12px}.chart-figure{flex:0 1 240px;max-height:260px}.chart-figure svg{flex:1;min-height:0}.chart-figure figcaption{font-size:9px;gap:16px;min-height:36px}.text-button{font-size:10px}.chart-control label{font-size:12px}.chart-control p{font-size:10px}.time-screen{gap:20px}.time-heading h2{font-size:10.6vw;margin-top:14px}.time-heading .body-copy{font-size:12px;margin-top:10px}.time-layout{display:flex;flex-direction:column;gap:23px;align-items:stretch}.week-grid{grid-template-columns:repeat(24,1fr);aspect-ratio:24/7;gap:3px;max-height:105px}.week-topline{font-size:8px;margin-bottom:10px}.week-legend{font-size:8px;gap:12px;margin-top:12px}.week-note{display:none}.slider-group{margin-top:12px}.slider-group label{font-size:11px}.slider-group output{font-size:10px}.slider-group input{height:30px}.time-total{padding-top:12px;margin-top:6px}.time-total strong{font-size:48px}.time-total span{font-size:12px}.time-total>p:last-child{font-size:10px;margin-top:3px;min-height:16px}.time-perspective{font-size:10px;padding-top:12px}.today-screen{gap:23px}.today-screen h2{font-size:11vw}.today-screen .intro{font-size:13px}.intention{margin-top:5px}.intention>label{font-size:11px}.intention-entry{gap:12px;padding-block:10px}.intention-entry input{font-size:13px}.intention-entry input::placeholder{font-size:11px}.intention-suggestions{gap:7px;margin-top:13px}.intention-suggestions button{font-size:9px;padding-inline:10px}#intention-result{font-size:12px;min-height:48px;margin-top:12px}.note-screen{gap:23px}.note-screen h2{font-size:11vw}.note-copy{gap:18px}.note-copy p{font-size:13px;line-height:1.65}.note-equation{font-size:23px}.data-screen{gap:15px}.data-screen h2{font-size:10vw}.data-screen table{font-size:11px}th,td{padding:10px 7px}.data-screen caption{font-size:10px;padding-bottom:10px}.table-pager{gap:12px;font-size:9px}.table-pager button{font-size:10px}.story-footer{padding-inline:20px;gap:12px;grid-template-columns:1fr auto 1fr}.back-button{font-size:11px;gap:8px}.next-button{font-size:11px;min-width:100px;padding:10px 16px;gap:17px}.story-position{gap:5px}#story-step{font-size:10px}#story-label{font-size:7px;letter-spacing:.07em}}
+@media(max-height:700px) and (min-width:601px){body{grid-template-rows:56px minmax(0,1fr) 64px}.screen{padding-block:20px;gap:16px}.hero-screen,.math-screen{gap:45px}h1,.hero-copy h1{font-size:min(5.6vw,62px)}h2,.math-copy h2{font-size:52px}.hero-copy h1{margin-top:18px}.hero-copy .intro{margin-top:18px;font-size:14px}#age-form{margin-top:20px}.age-entry input{font-size:42px}.circle-button{width:44px;height:44px}.day-art{max-width:360px;justify-self:end;max-height:100%;aspect-ratio:1.1}.art-number{font-size:110px}.math-copy{gap:18px}.math-copy .intro{font-size:14px}.math-copy .body-copy{font-size:12px}.math-visual{gap:20px}.odds-screen h2{font-size:48px}.odds-screen h2 br{display:none}.probability-display{font-size:5.7vw;padding-bottom:13px}.odds-screen>.intro,.frequency,.survival-line{font-size:12px}.result-caveat{font-size:10px}.curve-heading h2{font-size:42px;margin-top:10px}.curve-heading h2 br{display:none}.chart-figure{max-width:660px}.chart-control input{height:26px}.time-heading h2{font-size:42px;margin-top:8px}.time-heading{display:flex}.time-heading .body-copy{font-size:12px}.time-screen{gap:15px}.time-layout{gap:40px}.week-grid{grid-template-columns:repeat(24,1fr);aspect-ratio:24/7}.slider-group{margin-top:8px}.slider-group input{height:26px}.time-total{padding-top:10px}.time-total strong{font-size:44px}.time-total>p:last-child{min-height:15px;font-size:10px}.week-note{font-size:9px;margin-top:12px}.time-perspective{font-size:10px;padding-top:10px}.today-screen h2{font-size:54px}.today-screen .intro{font-size:13px}.intention{margin-top:0}.intention-entry{padding-block:6px}.intention-suggestions{margin-top:10px}#intention-result{min-height:24px;margin-top:10px}.note-screen{gap:20px}.note-screen h2{font-size:48px}.note-copy{gap:13px;max-width:850px}.note-copy p{font-size:13px}.data-screen h2{font-size:36px}.data-screen h2 br{display:none}.data-screen{gap:10px}th,td{padding:7px 10px}}
+@media(max-height:620px) and (max-width:600px){body{grid-template-rows:50px minmax(0,1fr) 60px}.header{padding-inline:18px}.brand{font-size:20px}.brand-symbol{font-size:24px}.screen{padding-block:16px;gap:14px}.eyebrow{font-size:8px}.hero-copy h1{margin-top:18px}.hero-copy .intro{margin-top:16px;font-size:12px}#age-form{margin-top:23px}.age-entry{padding-bottom:9px}.age-entry input{font-size:40px}.age-entry>span{font-size:12px}.circle-button{width:42px;height:42px}#age-help{font-size:8px;margin-top:9px}.odds-screen h2{font-size:10.5vw}.odds-screen>.intro{font-size:12px}.probability-display{padding-bottom:12px}.frequency,.survival-line{font-size:11px}.result-caveat{font-size:9px}.math-screen{gap:25px}.math-copy{gap:15px}.math-copy h2{font-size:10.5vw}.math-copy .intro{font-size:12px}.math-copy .body-copy{font-size:12px}.math-visual{gap:18px}.curve-heading h2{font-size:9.5vw;margin-top:10px}.curve-heading .body-copy{font-size:11px;margin-top:10px}.curve-screen{gap:12px}.chart-figure{flex-basis:175px;max-height:180px}.chart-control input{height:30px}.time-screen{gap:12px}.time-heading h2{font-size:9.5vw;margin-top:8px}.time-heading .body-copy{font-size:10px;margin-top:5px}.time-layout{gap:14px}.week-topline{font-size:7px;margin-bottom:7px}.week-grid{gap:2px;max-height:70px}.week-legend{font-size:7px;gap:9px;margin-top:8px}.slider-group{margin-top:7px}.slider-group label{font-size:10px}.slider-group output{font-size:9px}.slider-group input{height:25px}.time-total{padding-top:8px;margin-top:4px}.time-total strong{font-size:40px}.time-total span{font-size:11px}.time-total>p:last-child{font-size:9px;line-height:1.4}.time-perspective{font-size:9px;padding-top:8px;line-height:1.5}.today-screen{gap:16px}.today-screen h2{font-size:10.5vw}.today-screen .intro{font-size:12px}.intention-entry{padding-block:7px}.intention-suggestions{gap:6px;margin-top:10px}.intention-suggestions button{min-height:36px;font-size:8px}#intention-result{font-size:11px;min-height:38px;margin-top:10px}.note-screen{gap:18px}.note-screen h2{font-size:10vw}.note-copy{gap:13px}.note-copy p{font-size:12px;line-height:1.6}.note-equation{font-size:20px}.data-screen{gap:11px}.data-screen h2{font-size:9vw}th,td{padding:8px 6px}.data-screen caption{padding-bottom:7px}.table-pager{font-size:9px}.table-pager button{font-size:9px}#story-label{display:none}.story-position{gap:0}.story-footer{padding-inline:18px}.next-button{min-width:94px}}
+@media(max-height:450px) and (min-width:601px){body{grid-template-rows:46px minmax(0,1fr) 54px}.header,.story-footer{padding-inline:24px}.brand{font-size:20px}.brand-symbol{font-size:24px}.header-link{font-size:11px}.screen{padding-block:12px;gap:10px}.eyebrow{font-size:8px}.hero-copy h1{font-size:40px;margin-top:12px}.hero-copy .intro{font-size:11px;margin-top:12px}#age-form{margin-top:13px}.age-entry{margin-top:0;padding-block:3px}.age-entry input{font-size:34px}.age-entry>span{font-size:11px}.circle-button{width:36px;height:36px;font-size:19px}#age-help{font-size:8px;margin-top:6px}.day-art{max-width:240px}.art-number{font-size:80px}.art-top,.art-bottom{font-size:6px}.art-bottom{padding-top:8px}.art-center>span:last-child{font-size:6px}.math-copy h2{font-size:40px}.math-copy{gap:12px}.math-copy .intro,.math-copy .body-copy{font-size:11px}.math-visual{gap:20px}.math-visual .fine-print{font-size:9px}.odds-screen{display:grid;grid-template-columns:1fr 1.4fr;grid-template-rows:auto auto auto auto;gap:10px 35px;align-content:center}.odds-screen>.eyebrow{grid-column:1;grid-row:1}.odds-screen h2{grid-column:1;grid-row:2/4;font-size:40px}.odds-screen h2 br{display:block}.odds-screen>.intro{grid-column:2;grid-row:1;font-size:11px}.probability-display{grid-column:2;grid-row:2;font-size:3.3vw;padding-bottom:10px}.frequency{grid-column:2;grid-row:3;font-size:11px}.survival-line{grid-column:2;grid-row:4;font-size:10px}.result-caveat{grid-column:1/-1;grid-row:5;max-width:none;font-size:9px}.curve-heading h2{font-size:32px;margin-top:7px}.curve-heading .body-copy{font-size:10px}.chart-figure{max-width:440px}.chart-figure figcaption{font-size:8px;min-height:24px}.chart-control{max-width:440px}.chart-control input{height:22px}.chart-control label,.chart-control p{font-size:9px}.time-heading h2{font-size:32px}.time-heading .body-copy{font-size:10px}.time-layout{gap:30px}.time-heading .eyebrow{display:none}.week-topline{font-size:7px;margin-bottom:8px}.week-legend{font-size:7px;gap:10px;margin-top:10px}.week-note{font-size:8px;margin-top:10px}.slider-group label,.slider-group output{font-size:9px}.slider-group{margin-top:4px}.slider-group input{height:22px}.time-total{padding-top:7px;margin-top:3px}.time-total strong{font-size:34px}.time-total span{font-size:10px}.time-total>p:last-child{font-size:9px;line-height:1.4}.time-perspective{font-size:9px;padding-top:8px}.today-screen{display:grid;grid-template-columns:1fr 1.2fr;gap:12px 40px;align-content:center;text-align:left}.today-screen .eyebrow{grid-column:1;grid-row:1}.today-screen h2{grid-column:1;grid-row:2;font-size:38px}.today-screen .intro{grid-column:1;grid-row:3;font-size:11px}.intention{grid-column:2;grid-row:1/4;align-self:center}.intention>label{font-size:10px}.intention-entry input{font-size:11px}.intention-entry input::placeholder{font-size:10px}.intention-entry .circle-button{width:36px;height:36px}.intention-suggestions button{min-height:34px;font-size:8px;padding:6px 10px}#intention-result{font-size:10px;min-height:30px}.note-screen{display:grid;grid-template-columns:.8fr 1.4fr;gap:12px 45px;align-content:center}.note-screen>.eyebrow{grid-column:1;grid-row:1}.note-screen h2{grid-column:1;grid-row:2;font-size:40px}.note-copy{grid-column:2;grid-row:1/3;gap:12px}.note-copy p{font-size:11px;line-height:1.6}.note-equation{font-size:21px}.data-screen{max-width:720px;gap:6px}.data-screen h2{font-size:25px}.data-screen .eyebrow{display:none}.data-screen>.fine-print{font-size:9px}.data-screen table{font-size:10px}.data-screen caption{font-size:9px;padding-bottom:5px}th,td{padding:4px 8px}.table-pager{font-size:9px;min-height:30px}.table-pager button{font-size:9px;min-height:30px}#story-label{display:none}.next-button{min-height:40px;padding-block:8px}.back-button{min-height:40px}.story-footer{gap:12px}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important}}
+
+@media(max-height:620px) and (max-width:600px){.time-heading .eyebrow{display:none}.time-heading h2{margin-top:0}.time-screen{gap:10px}}
+</style>
+  <script type="module">const EMBEDDED_DATA = {"schemaVersion":1,"id":"ssa-us-area-2023","title":"SSA 2023 period life table","publisher":"U.S. Social Security Administration","reportYear":2026,"dataYear":2023,"retrievedOn":"2026-10-18","sourceUrl":"https://www.ssa.gov/oact/STATS/table4c6.html","population":"Social Security area population (U.S.-based; see source definition)","minAge":18,"maxAge":100,"series":["male","female"],"columns":{"qx":"Probability of dying between exact age x and x+1, conditional on reaching x.","ex":"Average remaining years at exact age x under 2023 mortality rates."},"rows":[{"age":18,"male":{"qx":0.000999,"ex":58.56},"female":{"qx":0.000372,"ex":63.69}},{"age":19,"male":{"qx":0.001138,"ex":57.62},"female":{"qx":0.00041,"ex":62.72}},{"age":20,"male":{"qx":0.001235,"ex":56.69},"female":{"qx":0.000441,"ex":61.74}},{"age":21,"male":{"qx":0.001315,"ex":55.76},"female":{"qx":0.000476,"ex":60.77}},{"age":22,"male":{"qx":0.001378,"ex":54.83},"female":{"qx":0.000513,"ex":59.8}},{"age":23,"male":{"qx":0.001439,"ex":53.9},"female":{"qx":0.000546,"ex":58.83}},{"age":24,"male":{"qx":0.001509,"ex":52.98},"female":{"qx":0.000582,"ex":57.86}},{"age":25,"male":{"qx":0.001595,"ex":52.06},"female":{"qx":0.000609,"ex":56.9}},{"age":26,"male":{"qx":0.001685,"ex":51.14},"female":{"qx":0.000641,"ex":55.93}},{"age":27,"male":{"qx":0.001783,"ex":50.23},"female":{"qx":0.000683,"ex":54.97}},{"age":28,"male":{"qx":0.001876,"ex":49.32},"female":{"qx":0.00074,"ex":54}},{"age":29,"male":{"qx":0.00197,"ex":48.41},"female":{"qx":0.000808,"ex":53.04}},{"age":30,"male":{"qx":0.002085,"ex":47.5},"female":{"qx":0.000878,"ex":52.08}},{"age":31,"male":{"qx":0.002202,"ex":46.6},"female":{"qx":0.000947,"ex":51.13}},{"age":32,"male":{"qx":0.002308,"ex":45.7},"female":{"qx":0.001018,"ex":50.18}},{"age":33,"male":{"qx":0.002407,"ex":44.81},"female":{"qx":0.001089,"ex":49.23}},{"age":34,"male":{"qx":0.00249,"ex":43.91},"female":{"qx":0.001154,"ex":48.28}},{"age":35,"male":{"qx":0.002577,"ex":43.02},"female":{"qx":0.001209,"ex":47.34}},{"age":36,"male":{"qx":0.002665,"ex":42.13},"female":{"qx":0.001263,"ex":46.39}},{"age":37,"male":{"qx":0.002764,"ex":41.24},"female":{"qx":0.001347,"ex":45.45}},{"age":38,"male":{"qx":0.002864,"ex":40.36},"female":{"qx":0.001438,"ex":44.51}},{"age":39,"male":{"qx":0.002987,"ex":39.47},"female":{"qx":0.001533,"ex":43.58}},{"age":40,"male":{"qx":0.003115,"ex":38.59},"female":{"qx":0.001643,"ex":42.64}},{"age":41,"male":{"qx":0.003253,"ex":37.71},"female":{"qx":0.001742,"ex":41.71}},{"age":42,"male":{"qx":0.003419,"ex":36.83},"female":{"qx":0.001845,"ex":40.78}},{"age":43,"male":{"qx":0.0036,"ex":35.95},"female":{"qx":0.001954,"ex":39.86}},{"age":44,"male":{"qx":0.003777,"ex":35.08},"female":{"qx":0.002075,"ex":38.93}},{"age":45,"male":{"qx":0.003931,"ex":34.21},"female":{"qx":0.002187,"ex":38.01}},{"age":46,"male":{"qx":0.004073,"ex":33.34},"female":{"qx":0.002306,"ex":37.1}},{"age":47,"male":{"qx":0.004245,"ex":32.48},"female":{"qx":0.002438,"ex":36.18}},{"age":48,"male":{"qx":0.004477,"ex":31.62},"female":{"qx":0.002595,"ex":35.27}},{"age":49,"male":{"qx":0.004795,"ex":30.76},"female":{"qx":0.002791,"ex":34.36}},{"age":50,"male":{"qx":0.005126,"ex":29.9},"female":{"qx":0.00303,"ex":33.45}},{"age":51,"male":{"qx":0.005496,"ex":29.05},"female":{"qx":0.003288,"ex":32.55}},{"age":52,"male":{"qx":0.005917,"ex":28.21},"female":{"qx":0.003554,"ex":31.66}},{"age":53,"male":{"qx":0.006404,"ex":27.38},"female":{"qx":0.003847,"ex":30.77}},{"age":54,"male":{"qx":0.006923,"ex":26.55},"female":{"qx":0.004172,"ex":29.89}},{"age":55,"male":{"qx":0.007491,"ex":25.73},"female":{"qx":0.004532,"ex":29.01}},{"age":56,"male":{"qx":0.008173,"ex":24.92},"female":{"qx":0.004923,"ex":28.14}},{"age":57,"male":{"qx":0.008938,"ex":24.12},"female":{"qx":0.005365,"ex":27.28}},{"age":58,"male":{"qx":0.009714,"ex":23.34},"female":{"qx":0.005815,"ex":26.42}},{"age":59,"male":{"qx":0.010494,"ex":22.56},"female":{"qx":0.006333,"ex":25.57}},{"age":60,"male":{"qx":0.011337,"ex":21.79},"female":{"qx":0.006923,"ex":24.73}},{"age":61,"male":{"qx":0.012232,"ex":21.04},"female":{"qx":0.007555,"ex":23.9}},{"age":62,"male":{"qx":0.013196,"ex":20.29},"female":{"qx":0.00822,"ex":23.08}},{"age":63,"male":{"qx":0.014229,"ex":19.56},"female":{"qx":0.008881,"ex":22.27}},{"age":64,"male":{"qx":0.015316,"ex":18.83},"female":{"qx":0.009514,"ex":21.46}},{"age":65,"male":{"qx":0.016455,"ex":18.12},"female":{"qx":0.010188,"ex":20.66}},{"age":66,"male":{"qx":0.017574,"ex":17.41},"female":{"qx":0.01088,"ex":19.87}},{"age":67,"male":{"qx":0.018735,"ex":16.71},"female":{"qx":0.011659,"ex":19.08}},{"age":68,"male":{"qx":0.019981,"ex":16.02},"female":{"qx":0.012543,"ex":18.3}},{"age":69,"male":{"qx":0.021366,"ex":15.34},"female":{"qx":0.013581,"ex":17.53}},{"age":70,"male":{"qx":0.022903,"ex":14.66},"female":{"qx":0.014769,"ex":16.76}},{"age":71,"male":{"qx":0.024615,"ex":14},"female":{"qx":0.016153,"ex":16.01}},{"age":72,"male":{"qx":0.026504,"ex":13.34},"female":{"qx":0.017705,"ex":15.26}},{"age":73,"male":{"qx":0.028648,"ex":12.69},"female":{"qx":0.019495,"ex":14.53}},{"age":74,"male":{"qx":0.031071,"ex":12.05},"female":{"qx":0.021533,"ex":13.81}},{"age":75,"male":{"qx":0.033802,"ex":11.42},"female":{"qx":0.023846,"ex":13.1}},{"age":76,"male":{"qx":0.03701,"ex":10.8},"female":{"qx":0.026458,"ex":12.41}},{"age":77,"male":{"qx":0.041158,"ex":10.19},"female":{"qx":0.0297,"ex":11.73}},{"age":78,"male":{"qx":0.045461,"ex":9.61},"female":{"qx":0.033135,"ex":11.08}},{"age":79,"male":{"qx":0.050346,"ex":9.04},"female":{"qx":0.036982,"ex":10.44}},{"age":80,"male":{"qx":0.055633,"ex":8.5},"female":{"qx":0.041183,"ex":9.82}},{"age":81,"male":{"qx":0.061757,"ex":7.97},"female":{"qx":0.045959,"ex":9.22}},{"age":82,"male":{"qx":0.068358,"ex":7.46},"female":{"qx":0.051282,"ex":8.64}},{"age":83,"male":{"qx":0.07542,"ex":6.97},"female":{"qx":0.057262,"ex":8.08}},{"age":84,"male":{"qx":0.083364,"ex":6.5},"female":{"qx":0.064107,"ex":7.54}},{"age":85,"male":{"qx":0.09268,"ex":6.04},"female":{"qx":0.071752,"ex":7.02}},{"age":86,"male":{"qx":0.103459,"ex":5.61},"female":{"qx":0.08049,"ex":6.53}},{"age":87,"male":{"qx":0.115502,"ex":5.2},"female":{"qx":0.090566,"ex":6.05}},{"age":88,"male":{"qx":0.129018,"ex":4.81},"female":{"qx":0.102204,"ex":5.61}},{"age":89,"male":{"qx":0.14381,"ex":4.45},"female":{"qx":0.115178,"ex":5.19}},{"age":90,"male":{"qx":0.159458,"ex":4.11},"female":{"qx":0.129176,"ex":4.8}},{"age":91,"male":{"qx":0.176551,"ex":3.8},"female":{"qx":0.144229,"ex":4.44}},{"age":92,"male":{"qx":0.19536,"ex":3.5},"female":{"qx":0.160353,"ex":4.1}},{"age":93,"male":{"qx":0.216286,"ex":3.23},"female":{"qx":0.177635,"ex":3.79}},{"age":94,"male":{"qx":0.238799,"ex":2.99},"female":{"qx":0.196502,"ex":3.5}},{"age":95,"male":{"qx":0.262268,"ex":2.77},"female":{"qx":0.216846,"ex":3.23}},{"age":96,"male":{"qx":0.286291,"ex":2.58},"female":{"qx":0.23875,"ex":2.99}},{"age":97,"male":{"qx":0.310944,"ex":2.41},"female":{"qx":0.261359,"ex":2.77}},{"age":98,"male":{"qx":0.332325,"ex":2.27},"female":{"qx":0.283899,"ex":2.57}},{"age":99,"male":{"qx":0.349036,"ex":2.15},"female":{"qx":0.306491,"ex":2.39}},{"age":100,"male":{"qx":0.366568,"ex":2.04},"female":{"qx":0.32968,"ex":2.23}}]};
+/** Pure calculations. No DOM, network, tracking, or personal input persistence. */
+const MODEL = Object.freeze({ id: 'age-only-constant-hazard-v1', daysPerYear: 365, minAge: 18, maxAge: 100 });
+
+function validateAge(value) {
+  if (value === '' || value === null || value === undefined || typeof value === 'boolean' || (typeof value === 'string' && !value.trim())) {
+    return { valid: false, message: 'Enter your age as a whole number from 18 to 100.' };
+  }
+  const age = Number(value);
+  if (!Number.isInteger(age) || age < MODEL.minAge || age > MODEL.maxAge) {
+    return { valid: false, message: 'Use a whole-number age from 18 to 100 for this prototype.' };
+  }
+  return { valid: true, age };
+}
+
+function annualToDaily(q) {
+  if (!Number.isFinite(q) || q < 0 || q >= 1) throw new RangeError('Annual probability must be finite and in [0, 1).');
+  // This form avoids loss of precision for small probabilities.
+  return q === 0 ? 0 : -Math.expm1(Math.log1p(-q) / MODEL.daysPerYear);
+}
+
+function validateDataset(data) {
+  if (data.schemaVersion !== 1 || data.id !== 'ssa-us-area-2023' || data.rows?.length !== 83) throw new Error('Unsupported mortality dataset.');
+  for (let age = MODEL.minAge; age <= MODEL.maxAge; age++) {
+    const row = data.rows[age - MODEL.minAge];
+    if (row?.age !== age) throw new Error('Missing or unordered mortality age.');
+    for (const series of ['female', 'male']) {
+      const item = row[series];
+      if (!item || !Number.isFinite(item.qx) || item.qx <= 0 || item.qx >= 1 || !Number.isFinite(item.ex) || item.ex <= 0) throw new Error('Invalid mortality row.');
+    }
+  }
+  return data;
+}
+
+/** Stable result contract: a new evidence-backed model can return the same shape. */
+function estimateByAge(dataset, value) {
+  const validation = validateAge(value);
+  if (!validation.valid) throw new RangeError(validation.message);
+  const row = dataset.rows.find(item => item.age === validation.age);
+  if (!row) throw new RangeError('This age is missing from the source table.');
+  const series = ['female', 'male'].map(key => ({ key, annual: row[key].qx, daily: annualToDaily(row[key].qx), remainingYears: row[key].ex }));
+  const range = key => [Math.min(...series.map(item => item[key])), Math.max(...series.map(item => item[key]))];
+  const daily = range('daily');
+  return { modelId: MODEL.id, datasetId: dataset.id, age: validation.age, series, annual: range('annual'), daily, survival: [1 - daily[1], 1 - daily[0]], remainingYears: range('remainingYears') };
+}
+
+function weeklyBudget({ sleepPerNight, workPerWeek, carePerWeek }) {
+  const values = [sleepPerNight, workPerWeek, carePerWeek];
+  if (values.some(n => !Number.isFinite(n) || n < 0) || sleepPerNight > 24) throw new RangeError('Time inputs must be finite, nonnegative hours.');
+  const sleep = sleepPerNight * 7;
+  const allocated = sleep + workPerWeek + carePerWeek;
+  return { sleep, work: workPerWeek, care: carePerWeek, allocated, open: Math.max(0, 168 - allocated), over: Math.max(0, allocated - 168), valid: allocated <= 168 };
+}
+
+function percent(value, digits = 5) {
+  return (value * 100).toLocaleString('en-US', { minimumFractionDigits: digits, maximumFractionDigits: digits, useGrouping: false });
+}
+
+function compactRange(values, digits = 1) {
+  const format = value => value.toLocaleString('en-US', { maximumFractionDigits: digits });
+  const low = format(values[0]);
+  const high = format(values[1]);
+  return low === high ? low : `${low}–${high}`;
+}
+
+
+const $ = selector => document.querySelector(selector);
+const $$ = selector => [...document.querySelectorAll(selector)];
+let datasetPromise;
+let dataset;
+let currentAge;
+let currentScreen = 'start';
+let returnScreen = 'start';
+let storyIndex = 0;
+let dataPage = 0;
+const storyPages = [
+  ['start', 'A LITTLE PERSPECTIVE'], ['tomorrow', 'THE ODDS'],
+  ['annual', 'START WITH A YEAR'], ['assumption', 'ONE ASSUMPTION'],
+  ['daily', 'SOLVE FOR ONE DAY'], ['curve', 'A LONGER VIEW'],
+  ['time', 'YOUR NEXT WEEK'], ['today', 'ONE GOOD HOUR']
+];
+const methodPages = ['source', 'assumptions', 'deeper', 'boundaries', 'privacy'];
+
+function loadData() {
+  if (!datasetPromise) datasetPromise = Promise.resolve(EMBEDDED_DATA).then(validateDataset);
+  return datasetPromise;
+}
+
+function sliderStyle(input) {
+  const fraction = (Number(input.value) - Number(input.min)) / (Number(input.max) - Number(input.min));
+  input.style.setProperty('--fill', `${fraction * 100}%`);
+}
+
+function setAgeError(message) {
+  $('#age-error').textContent = message;
+  if (message) $('#age').setAttribute('aria-invalid', 'true');
+  else $('#age').removeAttribute('aria-invalid');
+}
+
+$('#age').addEventListener('input', () => setAgeError(''));
+$('#age-form').addEventListener('submit', async event => {
+  event.preventDefault();
+  const validation = validateAge($('#age').value);
+  if (!validation.valid) { setAgeError(validation.message); $('#age').focus(); return; }
+  setAgeError('');
+  const button = $('#begin');
+  button.disabled = true;
+  $('#story-next').disabled = true;
+  button.setAttribute('aria-label', 'Loading the published mortality table');
+  try {
+    dataset = await loadData();
+    currentAge = validation.age;
+    renderEstimate(currentAge);
+    showScreen('tomorrow');
+  } catch (error) {
+    setAgeError('The data couldn’t load. Check your connection, then try again.');
+    $('#age').focus();
+  } finally {
+    button.disabled = false;
+    $('#story-next').disabled = false;
+    button.setAttribute('aria-label', 'Explore my age-based estimate');
+  }
+});
+
+function renderEstimate(age) {
+  const result = estimateByAge(dataset, age);
+  $$('[data-age]').forEach(element => { element.textContent = age; });
+  $('#daily-low').textContent = percent(result.daily[0]);
+  $('#daily-high').textContent = percent(result.daily[1]);
+  $('#million-description').textContent = `About ${compactRange(result.daily.map(p => p * 1_000_000))} deaths per million people over one day.`;
+  $('#survival-percent').textContent = `${percent(result.survival[0], 3)}–${percent(result.survival[1], 3)}%`;
+  // Adaptive precision keeps the survival readout from displaying a misleading 100%.
+  if (percent(result.survival[0], 3) === percent(result.survival[1], 3)) {
+    $('#survival-percent').textContent = `${percent(result.survival[0])}–${percent(result.survival[1])}%`;
+  }
+  $('#next-age').textContent = age + 1;
+  $('#annual-range').textContent = `${compactRange(result.annual.map(p => p * 100), 4)}%`;
+  $('#math-daily-range').textContent = `${percent(result.daily[0])}–${percent(result.daily[1])}%`;
+  $('#expectancy-note').textContent = `At exact age ${age}, average remaining life expectancy in these tables is ${compactRange(result.remainingYears, 2)} years under fixed 2023 rates. This already accounts for reaching ${age}. An average is not a deadline or a personal prediction.`;
+  $('#chart-age').value = age;
+  dataPage = 0;
+  renderDataPage();
+  renderChart(age);
+}
+
+function svgElement(tag, attributes = {}, content) {
+  const element = document.createElementNS('http://www.w3.org/2000/svg', tag);
+  for (const [key, value] of Object.entries(attributes)) element.setAttribute(key, value);
+  if (content !== undefined) element.textContent = content;
+  return element;
+}
+
+function renderChart(age) {
+  const chart = $('#risk-chart');
+  chart.querySelectorAll('[data-chart]').forEach(node => node.remove());
+  const group = svgElement('g', { 'data-chart': '', 'aria-hidden': 'true' });
+  const box = { left: 52, top: 20, width: 584, height: 235 };
+  const yMax = 0.0015;
+  const x = a => box.left + ((a - 18) / 82) * box.width;
+  const y = p => box.top + box.height * (1 - p / yMax);
+  const textStyle = { fill: '#696966', 'font-size': 11, 'font-family': '-apple-system, BlinkMacSystemFont, sans-serif' };
+  [0, .0005, .001, .0015].forEach(p => {
+    group.append(svgElement('line', { x1: box.left, y1: y(p), x2: box.left + box.width, y2: y(p), stroke: '#dcdcd7', 'stroke-width': 1 }));
+    group.append(svgElement('text', { x: box.left - 10, y: y(p) + 4, 'text-anchor': 'end', ...textStyle }, `${(p * 100).toFixed(2)}%`));
+  });
+  [18, 40, 60, 80, 100].forEach(a => group.append(svgElement('text', { x: x(a), y: 282, 'text-anchor': 'middle', ...textStyle }, `${a}`)));
+  group.append(svgElement('text', { x: box.left, y: 9, ...textStyle, 'font-size': 9 }, 'DAILY RISK'));
+  group.append(svgElement('text', { x: box.left + box.width, y: 299, 'text-anchor': 'end', ...textStyle, 'font-size': 9 }, 'AGE'));
+  const paths = {};
+  for (const key of ['male', 'female']) paths[key] = dataset.rows.map(row => `${x(row.age)},${y(annualToDaily(row[key].qx))}`);
+  group.append(svgElement('path', { d: `M ${paths.male.join(' L ')} L ${[...paths.female].reverse().join(' L ')} Z`, fill: '#e7e7e0' }));
+  group.append(svgElement('path', { d: `M ${paths.male.join(' L ')}`, fill: 'none', stroke: '#171717', 'stroke-width': 2 }));
+  group.append(svgElement('path', { d: `M ${paths.female.join(' L ')}`, fill: 'none', stroke: '#777771', 'stroke-width': 2, 'stroke-dasharray': '5 4' }));
+  group.append(svgElement('line', { x1: x(age), x2: x(age), y1: box.top, y2: box.top + box.height, stroke: '#696966', 'stroke-width': 1, 'stroke-dasharray': '3 4' }));
+  const result = estimateByAge(dataset, age);
+  result.series.forEach(series => group.append(svgElement('circle', { cx: x(age), cy: y(series.daily), r: 4, fill: '#171717', stroke: '#fafaf7', 'stroke-width': 2 })));
+  chart.append(group);
+  $('#chart-age-value').textContent = age;
+  $('#chart-readout').textContent = `${percent(result.daily[0])}–${percent(result.daily[1])}% per day, conditional on reaching ${age}.`;
+  $('#chart-age').setAttribute('aria-valuetext', `Age ${age}. Daily mortality estimate ${percent(result.daily[0])} to ${percent(result.daily[1])} percent.`);
+  sliderStyle($('#chart-age'));
+}
+
+$('#chart-age').addEventListener('input', event => renderChart(Number(event.target.value)));
+
+function showScreen(id, focus = true) {
+  const target = $(`[data-screen="${id}"]`);
+  if (!target) return;
+  const nextIndex = storyPages.findIndex(page => page[0] === id);
+  const previousIndex = storyPages.findIndex(page => page[0] === currentScreen);
+  $('#main').dataset.direction = nextIndex >= 0 && previousIndex >= 0 && nextIndex < previousIndex ? 'back' : 'next';
+  $$('[data-screen]').forEach(screen => { screen.hidden = screen !== target; });
+  currentScreen = id;
+  if (nextIndex >= 0) storyIndex = nextIndex;
+  const noteIndex = methodPages.indexOf(id);
+  const isExtra = noteIndex >= 0 || id === 'data';
+  $('#method-button').textContent = isExtra ? 'Back to story ↙' : 'The method ↗';
+  $('#story-step').textContent = noteIndex >= 0 ? `${String(noteIndex + 1).padStart(2, '0')} / 05` : id === 'data' ? `${String(dataPage + 1).padStart(2, '0')} / 17` : `${String(storyIndex + 1).padStart(2, '0')} / 08`;
+  $('#story-label').textContent = noteIndex >= 0 ? 'THE METHOD' : id === 'data' ? 'CHART VALUES' : storyPages[storyIndex][1];
+  $('#story-back').disabled = !isExtra && storyIndex === 0;
+  $('#next-label').textContent = id === 'start' ? 'Begin' : id === 'today' ? 'Start again' : id === 'data' || noteIndex === methodPages.length - 1 ? 'Return' : 'Next';
+  $('#story-progress').style.width = `${(storyIndex + 1) / storyPages.length * 100}%`;
+  if (focus) target.querySelector('h1, h2')?.focus({ preventScroll: true });
+}
+
+function nextScreen() {
+  if (currentScreen === 'start') { $('#age-form').requestSubmit(); return; }
+  if (currentScreen === 'data') { showScreen(returnScreen); return; }
+  const noteIndex = methodPages.indexOf(currentScreen);
+  if (noteIndex >= 0) { showScreen(methodPages[noteIndex + 1] || returnScreen); return; }
+  showScreen(storyPages[(storyIndex + 1) % storyPages.length][0]);
+}
+
+function previousScreen() {
+  if (currentScreen === 'data') { showScreen(returnScreen); return; }
+  const noteIndex = methodPages.indexOf(currentScreen);
+  if (noteIndex >= 0) { showScreen(noteIndex ? methodPages[noteIndex - 1] : returnScreen); return; }
+  if (storyIndex > 0) showScreen(storyPages[storyIndex - 1][0]);
+}
+
+$('#story-next').addEventListener('click', nextScreen);
+$('#story-back').addEventListener('click', previousScreen);
+$$('[data-go]').forEach(button => button.addEventListener('click', () => showScreen(button.dataset.go)));
+$('#method-button').addEventListener('click', () => {
+  if (methodPages.includes(currentScreen) || currentScreen === 'data') showScreen(returnScreen);
+  else { returnScreen = currentScreen; showScreen('source'); }
+});
+document.addEventListener('keydown', event => {
+  if (event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) return;
+  if (event.key === 'Escape' && (methodPages.includes(currentScreen) || currentScreen === 'data')) { showScreen(returnScreen); return; }
+  if (['INPUT', 'TEXTAREA', 'BUTTON', 'A'].includes(event.target.tagName) || event.target.isContentEditable) return;
+  if (event.key === 'ArrowRight') { event.preventDefault(); nextScreen(); }
+  if (event.key === 'ArrowLeft') { event.preventDefault(); previousScreen(); }
+});
+
+function renderDataPage() {
+  if (!dataset) return;
+  const rows = dataset.rows.slice(dataPage * 5, dataPage * 5 + 5);
+  $('#chart-table').replaceChildren(...rows.map(row => {
+    const tr = document.createElement('tr');
+    [row.age, `${percent(annualToDaily(row.female.qx))}%`, `${percent(annualToDaily(row.male.qx))}%`].forEach((value, index) => {
+      const cell = document.createElement(index === 0 ? 'th' : 'td');
+      if (index === 0) cell.scope = 'row';
+      cell.textContent = value;
+      tr.append(cell);
+    });
+    return tr;
+  }));
+  $('#data-caption').textContent = `Ages ${rows[0].age}–${rows.at(-1).age} · 2023 rates held fixed`;
+  $('#data-page-count').textContent = `${dataPage + 1} / 17`;
+  $('#data-prev').disabled = dataPage === 0;
+  $('#data-next').disabled = dataPage === 16;
+  if (currentScreen === 'data') $('#story-step').textContent = `${String(dataPage + 1).padStart(2, '0')} / 17`;
+}
+$('#view-chart-data').addEventListener('click', () => {
+  returnScreen = 'curve';
+  dataPage = Math.floor((Number($('#chart-age').value) - 18) / 5);
+  renderDataPage();
+  showScreen('data');
+});
+$('#data-prev').addEventListener('click', () => { if (dataPage > 0) { dataPage--; renderDataPage(); } });
+$('#data-next').addEventListener('click', () => { if (dataPage < 16) { dataPage++; renderDataPage(); } });
+
+function renderBudget() {
+  const inputs = { sleepPerNight: Number($('#sleep').value), workPerWeek: Number($('#work').value), carePerWeek: Number($('#care').value) };
+  const budget = weeklyBudget(inputs);
+  $('#sleep-value').textContent = `${inputs.sleepPerNight} h / night`;
+  $('#work-value').textContent = `${inputs.workPerWeek} h / week`;
+  $('#care-value').textContent = `${inputs.carePerWeek} h / week`;
+  $('#sleep').setAttribute('aria-valuetext', `${inputs.sleepPerNight} hours per night`);
+  $('#work').setAttribute('aria-valuetext', `${inputs.workPerWeek} hours per week`);
+  $('#care').setAttribute('aria-valuetext', `${inputs.carePerWeek} hours per week`);
+  $('#open-hours').textContent = compactRange([budget.valid ? budget.open : budget.over, budget.valid ? budget.open : budget.over]);
+  $('#open-hours-label').textContent = budget.valid ? 'hours unallocated' : 'hours over budget';
+  $('#budget-note').textContent = budget.valid ? (budget.open === 0 ? 'Every hour is accounted for. Rest can matter wherever you find it.' : 'Room for rest, people, or a small beginning.') : 'Over 168 hours. Reduce a slider or check for overlap.';
+  $('.time-total').classList.toggle('over-budget', !budget.valid);
+  const grid = $('#week-grid');
+  const categories = [{ key: 'sleep', hours: budget.sleep, color: '#252525' }, { key: 'work', hours: budget.work, color: '#8a8a83' }, { key: 'care', hours: budget.care, color: '#c8c8bf' }];
+  const cells = Array.from({ length: 168 }, (_, index) => {
+    const cell = document.createElement('span');
+    cell.className = 'hour-cell open';
+    cell.setAttribute('aria-hidden', 'true');
+    let start = 0;
+    const stops = [];
+    let hasOpen = false;
+    for (const item of categories) {
+      const end = start + item.hours;
+      const left = Math.max(index, start);
+      const right = Math.min(index + 1, end);
+      const coverage = Math.max(0, right - left);
+      if (coverage > 0) {
+        stops.push(`${item.color} ${(left - index) * 100}% ${(right - index) * 100}%`);
+      }
+      start = end;
+    }
+    if (budget.allocated < index + 1) {
+      const left = Math.max(index, budget.allocated);
+      stops.push(`transparent ${(left - index) * 100}% 100%`);
+      hasOpen = true;
+    }
+    cell.className = `hour-cell${hasOpen ? ' open' : ''}`;
+    cell.style.background = `linear-gradient(to right, ${stops.join(', ')})`;
+    return cell;
+  });
+  grid.replaceChildren(...cells);
+  grid.setAttribute('aria-label', `168-hour week: ${budget.sleep} hours sleep, ${budget.work} work and study, ${budget.care} essentials. ${budget.valid ? `${budget.open} hours unallocated.` : `Over budget by ${budget.over} hours; the grid is capped at 168.`}`);
+  for (const id of ['sleep', 'work', 'care']) sliderStyle(document.getElementById(id));
+}
+for (const id of ['sleep', 'work', 'care']) document.getElementById(id).addEventListener('input', renderBudget);
+renderBudget();
+
+function setIntention() {
+  const value = $('#intention').value.trim();
+  $('#intention-result').textContent = value ? `One good hour for: ${value}. That’s a place to start.` : 'A quiet hour with no plan counts, too.';
+  $$('[data-intention]').forEach(button => button.setAttribute('aria-pressed', String(button.dataset.intention === value)));
+}
+$('#set-intention').addEventListener('click', setIntention);
+$('#intention').addEventListener('keydown', event => { if (event.key === 'Enter') { event.preventDefault(); setIntention(); } });
+$$('[data-intention]').forEach(button => button.addEventListener('click', () => { $('#intention').value = button.dataset.intention; setIntention(); }));
+
+showScreen('start', false);
+</script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to the story</a>
+  <header class="header">
+    <button class="brand" type="button" data-go="start" aria-label="Still Here, back to beginning"><span class="brand-symbol" aria-hidden="true">◕</span> still here.</button>
+    <span class="header-caption">A LITTLE PROBABILITY. A LITTLE PERSPECTIVE.</span>
+    <button class="header-link" id="method-button" type="button">The method <span aria-hidden="true">↗</span></button>
+  </header>
+
+  <main id="main" tabindex="-1" data-direction="next">
+    <section class="screen hero-screen" data-screen="start" aria-labelledby="hero-title">
+      <div class="hero-copy">
+        <p class="eyebrow">AN EXPERIMENT IN PERSPECTIVE</p>
+        <h1 id="hero-title" tabindex="-1">What are the odds<br>of <span class="soft">tomorrow?</span></h1>
+        <p class="intro">Probably better than you think.<br>Let’s put a little math behind the feeling.</p>
+        <form id="age-form" novalidate>
+          <label for="age">Start with your age.</label>
+          <div class="age-entry"><input id="age" type="number" min="18" max="100" step="1" inputmode="numeric" placeholder="25" autocomplete="off" required aria-describedby="age-help age-error"><span>years old</span><button class="circle-button" id="begin" type="submit" aria-label="Explore my age-based estimate">↗</button></div>
+          <p class="fine-print" id="age-help">Ages 18–100 · U.S.-based data · Inputs stay in your browser.</p>
+          <p class="field-error" id="age-error" role="alert"></p>
+        </form>
+      </div>
+      <div class="day-art" aria-hidden="true"><div class="art-top"><span>THE NEXT 24 HOURS</span><span>HERE / NOW</span></div><div class="orbit outer"></div><div class="orbit middle"></div><div class="orbit inner"></div><div class="orbit-point"></div><div class="art-center"><span class="art-number">24</span><span>HOURS OF POSSIBILITY</span></div><div class="art-bottom"><span>ONE ORDINARY DAY.</span><span>ENTIRELY YOURS.</span></div></div>
+    </section>
+
+    <section class="screen odds-screen" data-screen="tomorrow" hidden aria-labelledby="result-title">
+      <p class="eyebrow">THE ODDS / AGE <span data-age></span></p>
+      <h2 id="result-title" tabindex="-1">Tomorrow is<br><span class="soft">very likely.</span></h2>
+      <p class="intro">The estimated chance of dying in the next 24 hours:</p>
+      <div class="probability-display"><span id="daily-low">—</span><span class="range-dash" aria-label="to">—</span><span id="daily-high">—</span><span class="percent-sign">%</span></div>
+      <p class="frequency" id="million-description"></p>
+      <p class="survival-line">Or about <strong id="survival-percent"></strong> chance of living through the next day in these populations.</p>
+      <p class="fine-print result-caveat">A population estimate, not your personal prognosis. The range spans the female and male source tables; it is not a confidence interval.</p>
+    </section>
+
+    <section class="screen math-screen" data-screen="annual" hidden aria-labelledby="annual-title">
+      <div class="math-copy"><p class="eyebrow">THE MATH / 1 OF 3</p><h2 id="annual-title" tabindex="-1">Start with<br><span class="soft">a year.</span></h2><p class="intro">Published data gives us a starting point.</p><p class="body-copy">At exact age <span data-age></span>, the SSA tables give the probability of dying before age <span id="next-age"></span>, conditional on reaching <span data-age></span>.</p></div>
+      <div class="math-visual"><span class="visual-caption">ANNUAL PROBABILITY · q</span><strong id="annual-range" class="annual-number"></strong><div class="year-line" aria-hidden="true"><span>AGE <span data-age></span></span><i></i><span>ONE YEAR LATER</span></div><p class="fine-print">2023 period life table · Social Security area population</p></div>
+    </section>
+
+    <section class="screen math-screen" data-screen="assumption" hidden aria-labelledby="assumption-title">
+      <div class="math-copy"><p class="eyebrow">THE MATH / 2 OF 3</p><h2 id="assumption-title" tabindex="-1">One simple<br><span class="soft">assumption.</span></h2><p class="intro">Treat daily risk as constant within this age-year.</p><p class="body-copy">If p is the daily probability of dying, then 1 − p is the chance of surviving a day. Multiply that conditional survival probability across 365 days.</p></div>
+      <div class="math-visual"><span class="visual-caption">365 DAYS, MULTIPLIED</span><div class="equation">(1 − p)<sup>365</sup> = 1 − q</div><div class="day-strip" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><span>···</span><i></i></div><p class="fine-print">A modeling assumption. Real daily risks vary.</p></div>
+    </section>
+
+    <section class="screen math-screen" data-screen="daily" hidden aria-labelledby="daily-title">
+      <div class="math-copy"><p class="eyebrow">THE MATH / 3 OF 3</p><h2 id="daily-title" tabindex="-1">Solve for<br><span class="soft">one day.</span></h2><p class="intro">Take the 365th root. Subtract from 1.</p><p class="body-copy">We do this for each source table to get the range you saw. No AI guess. Just published data and probability.</p></div>
+      <div class="math-visual"><span class="visual-caption">ESTIMATED DAILY PROBABILITY · p</span><div class="equation">p = 1 − (1 − q)<sup>1/365</sup></div><div class="math-answer" id="math-daily-range"></div><p class="fine-print">“Tomorrow” means the next 24 hours, conditional on being alive now.</p></div>
+    </section>
+
+    <section class="screen curve-screen" data-screen="curve" hidden aria-labelledby="curve-title">
+      <div class="curve-heading"><div><p class="eyebrow">A LONGER VIEW</p><h2 id="curve-title" tabindex="-1">A curve.<br><span class="soft">Not a deadline.</span></h2></div><p class="body-copy">Explore daily risk at different ages.<br>2023 rates, held fixed.</p></div>
+      <figure class="chart-figure"><svg id="risk-chart" viewBox="0 0 660 300" role="img" aria-labelledby="chart-title chart-description"><title id="chart-title">Estimated daily mortality risk by age</title><desc id="chart-description">Female and male source tables, ages 18 through 100. Use the age slider for exact values, or open the data table.</desc></svg><figcaption><span><i class="legend-solid" aria-hidden="true"></i> Male table</span><span><i class="legend-dash" aria-hidden="true"></i> Female table</span><button class="text-button" id="view-chart-data" type="button">View values ↗</button></figcaption></figure>
+      <div class="chart-control"><label for="chart-age">Explore age <output id="chart-age-value" for="chart-age"></output></label><input id="chart-age" type="range" min="18" max="100" step="1" value="25"><p id="chart-readout" aria-live="polite"></p></div>
+    </section>
+
+    <section class="screen time-screen" data-screen="time" hidden aria-labelledby="time-title">
+      <div class="time-heading"><div><p class="eyebrow">THE PART YOU CAN SHAPE</p><h2 id="time-title" tabindex="-1">Your next <span class="soft">week.</span></h2></div><p class="body-copy">A lifetime is abstract. A week isn’t.</p></div>
+      <div class="time-layout"><div class="week-visual"><div class="week-topline"><span>YOUR NEXT SEVEN DAYS</span><span>168 HOURS</span></div><div id="week-grid" class="week-grid" role="img" aria-label="Weekly time budget"></div><div class="week-legend"><span><i class="sleep-swatch"></i>Sleep</span><span><i class="work-swatch"></i>Work / study</span><span><i class="care-swatch"></i>Essentials</span><span><i class="open-swatch"></i>Unallocated</span></div><p class="fine-print week-note">One square = one hour. Editable assumptions, not population averages. Count each hour once.</p></div>
+      <div class="time-controls"><div class="slider-group"><div><label for="sleep">Sleep</label><output id="sleep-value" for="sleep">8 h / night</output></div><input type="range" id="sleep" min="0" max="12" step="0.5" value="8"></div><div class="slider-group"><div><label for="work">Work &amp; study, combined</label><output id="work-value" for="work">40 h / week</output></div><input type="range" id="work" min="0" max="100" step="1" value="40"></div><div class="slider-group"><div><label for="care">Care, chores &amp; essentials</label><output id="care-value" for="care">21 h / week</output></div><input type="range" id="care" min="0" max="100" step="1" value="21"></div><div class="time-total" aria-live="polite"><p><strong id="open-hours">51</strong><span id="open-hours-label">hours unallocated</span></p><p id="budget-note">Room for rest, people, or a small beginning.</p></div></div></div>
+      <p class="time-perspective">These are editable assumptions. Work, care, learning, and rest can all be meaningful.</p>
+    </section>
+
+    <section class="screen today-screen" data-screen="today" hidden aria-labelledby="today-title">
+      <p class="eyebrow">A SMALL INVITATION</p><h2 id="today-title" tabindex="-1">Make room<br>for <span class="soft">one good hour.</span></h2><p class="intro">You don’t have to optimize your life.<br>Just be here for some of it.</p>
+      <div class="intention"><label for="intention">What would you like to make time for?</label><div class="intention-entry"><input id="intention" type="text" maxlength="100" placeholder="A walk. A call. Something just for you." autocomplete="off"><button class="circle-button" id="set-intention" type="button" aria-label="Choose my one good hour">↗</button></div><div class="intention-suggestions" aria-label="Ideas for one good hour"><button type="button" data-intention="Calling someone I miss">Someone I miss ↗</button><button type="button" data-intention="Learning something just for fun">Something I’m curious about ↗</button><button type="button" data-intention="Being outside, without a plan">A little time outside ↗</button></div><p id="intention-result" role="status"></p></div>
+    </section>
+
+    <section class="screen note-screen" data-screen="source" hidden aria-labelledby="source-title"><p class="eyebrow">THE METHOD / THE SOURCE</p><h2 id="source-title" tabindex="-1">Open data.<br><span class="soft">Open book.</span></h2><div class="note-copy"><p>We use the <a href="https://www.ssa.gov/oact/STATS/table4c6.html" target="_blank" rel="noopener noreferrer">SSA 2023 period life table ↗</a>, as used in the 2026 Trustees Report. Retrieved October 18, 2026.</p><p>It covers the Social Security area population, which is U.S.-based. See the source for its full definition.</p><p>The annual probability q measures dying between exact ages x and x + 1, conditional on reaching x. This prototype supports ages 18–100.</p></div></section>
+    <section class="screen note-screen" data-screen="assumptions" hidden aria-labelledby="notes-title"><p class="eyebrow">THE METHOD / THE ASSUMPTIONS</p><h2 id="notes-title" tabindex="-1">A model.<br><span class="soft">With limits.</span></h2><div class="note-copy"><p>Daily risk is modeled as constant within each age-year. Age at last birthday approximates exact age.</p><p>We ignore your upcoming birthday, leap years, seasonality, medical history, behavior, and day-specific hazards. This cannot estimate your individual risk.</p><p>The age curve compares people who have reached each age under fixed 2023 rates. It is not a forecast of your health or future mortality trends.</p></div></section>
+    <section class="screen note-screen" data-screen="deeper" hidden aria-labelledby="deeper-title"><p class="eyebrow">THE METHOD / A LITTLE DEEPER</p><h2 id="deeper-title" tabindex="-1">Survival,<br><span class="soft">multiplied.</span></h2><div class="note-copy"><p>The chain rule multiplies daily survival probabilities conditional on being alive at the start of each day. If each is 1 − p, annual survival is (1 − p)<sup>365</sup>.</p><div class="note-equation">λ = −ln(1 − q) &nbsp; · &nbsp; S(t) = e<sup>−λt</sup></div><p>Here λ is the constant yearly hazard and t is in years. Then p = 1 − e<sup>−λ/365</sup>. For small q, q ÷ 365 approximates the exact root formula we use.</p></div></section>
+    <section class="screen note-screen" data-screen="boundaries" hidden aria-labelledby="boundaries-title"><p class="eyebrow">THE METHOD / THE RANGE</p><h2 id="boundaries-title" tabindex="-1">Two tables.<br><span class="soft">No crystal ball.</span></h2><div class="note-copy"><p>The source publishes female and male categories. We show their spread without asking for sex or gender.</p><p>That spread is not a confidence interval. It does not bound an individual’s risk, which can differ substantially with health and circumstances.</p><p id="expectancy-note">The table also gives average remaining years conditional on reaching a given age. An average is not a deadline or a personal prediction.</p></div></section>
+    <section class="screen note-screen" data-screen="privacy" hidden aria-labelledby="privacy-title"><p class="eyebrow">THE METHOD / YOUR PRIVACY</p><h2 id="privacy-title" tabindex="-1">Your inputs.<br><span class="soft">Your browser.</span></h2><div class="note-copy"><p>Your age, weekly budget, and reflection are processed in browser memory. The app sends none of these inputs to a server and saves none between visits.</p><p>No app analytics, AI calls, or input-bearing URLs. Reloading clears your exploration.</p><p>Private-preview access is handled by the host, which may retain ordinary access logs. This local prototype needs no account.</p></div></section>
+    <section class="screen data-screen" data-screen="data" hidden aria-labelledby="data-title"><p class="eyebrow">BEHIND THE CURVE</p><h2 id="data-title" tabindex="-1">The values,<br><span class="soft">page by page.</span></h2><p class="fine-print">Estimated daily mortality, conditional on reaching each age.</p><table><caption id="data-caption"></caption><thead><tr><th scope="col">Age</th><th scope="col">Female table</th><th scope="col">Male table</th></tr></thead><tbody id="chart-table"></tbody></table><div class="table-pager"><button id="data-prev" type="button" aria-label="Previous five ages">← Previous ages</button><span id="data-page-count" role="status" aria-live="polite"></span><button id="data-next" type="button" aria-label="Next five ages">Next ages →</button></div></section>
+  </main>
+
+  <footer class="story-footer"><div class="progress-track" aria-hidden="true"><span id="story-progress"></span></div><button class="back-button" id="story-back" type="button" disabled>← <span>Back</span></button><div class="story-position"><span id="story-step">01 / 08</span><span id="story-label">A LITTLE PERSPECTIVE</span></div><button class="next-button" id="story-next" type="button"><span id="next-label">Begin</span><span aria-hidden="true">→</span></button></footer>
+  <noscript><p class="noscript">JavaScript is needed for this interactive story. Data: SSA 2023 period life table. No visitor inputs are stored.</p></noscript>
+</body>
+</html>
