@@ -16,7 +16,7 @@ You need Node.js 20 or later. There’s nothing to install.
 npm start
 ```
 
-Open http://127.0.0.1:4173. Enter an age to start. The math walkthrough plays automatically and can be paused, replayed, or skipped. The rest moves one view at a time, without scrolling. Motion off gives you a static version. Your inputs stay in place as you go.
+Open http://127.0.0.1:4173. Enter an age to start. The math walkthrough plays automatically and can be paused, replayed, or skipped. The rest moves one view at a time. Larger text and smaller windows let each view expand vertically so nothing gets cut off. Reduce motion gives you a static version. Your inputs stay in place as you go.
 
 ```sh
 npm run build  # Make a standalone HTML file
@@ -42,13 +42,15 @@ At age 25, the two tables give about **0.00017%–0.00044% per day**, or **1.7�
 
 The range compares the female and male tables, so the first version can ask for age alone. It isn’t a confidence interval or a personal prediction. We use age at last birthday to choose a row and leave out health, behavior, seasons, leap years, and the timing of the next birthday. The full assumptions are in the app’s “How it works” pages.
 
-The life-in-weeks grid groups its weeks into decades. “Look closer” opens one decade with labeled year rows and previous/next controls. It uses each table’s average remaining years at the entered age, multiplied by 52 and rounded. It compares two means, not two bounds on your lifespan. It does not subtract your age from life expectancy at birth.
+The life-in-weeks view starts with one year: 52 larger squares in four rows. Choose a decade or a whole life for context. Previous and next controls explore the selected scale, and the same totals are written beside the grid. It uses each table’s average remaining years at the entered age, multiplied by 52 and rounded. It compares two means, not two bounds on your lifespan. It does not subtract your age from life expectancy at birth.
 
 The weekly sliders are a separate exercise. Their defaults are starting values, not population averages. Change them to match your week.
 
 ## The design
 
-Five views: your age, the working, the odds, a life in weeks, and this week. A short note introduces the sensitive topic; anyone can skip straight to the weekly planner. The header steps aside after age entry. The design stays in black, white, and grayscale. Instrument Serif carries the headings; fine rules and small annotations give the pages the feel of a printed essay. The year ruler, calculation sheet, probability axis, and week grids each explain a different scale of time.
+Five views: your age, the working, the odds, a life in weeks, and this week. A short note introduces the sensitive topic; anyone can skip straight to the weekly planner. The header steps aside after age entry. The design stays in black, white, and grayscale. Instrument Serif carries the headings. Body text starts at 18px, notes at 16px, and short labels at 14px. Fine rules keep the feel of a printed essay without making the reading small. The year ruler, calculation sheet, probability axis, and week grids each explain a different scale of time.
+
+[Accessibility research and review](docs/accessibility-review.md) records the standards used, changes, checks, and remaining testing. Text size can be increased to 200% in the footer. The weekly planner accepts keyboard sliders or typed numbers, and its patterns have matching text totals.
 
 [Current visual direction](docs/visual-direction.md) explains the references, typography, interactions, and verification for this version.
 
