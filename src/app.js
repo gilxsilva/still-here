@@ -1,21 +1,24 @@
-import { validateAge, validateDataset, estimateByAge, annualToDaily, weeklyBudget, percent, compactRange } from './model.js';
+import { validateAge, validateDataset, estimateByAge, weeklyBudget, lifeWeeks, percent, compactRange } from './model.js';
 
 const $ = selector => document.querySelector(selector);
 const $$ = selector => [...document.querySelectorAll(selector)];
 let datasetPromise;
 let dataset;
-let currentAge;
+let result;
 let currentScreen = 'start';
-let returnScreen = 'start';
-let storyIndex = 0;
-let dataPage = 0;
-const storyPages = [
-  ['start', 'THE QUESTION'], ['tomorrow', 'THE ODDS'],
-  ['annual', 'START WITH A YEAR'], ['assumption', 'ONE DAILY RATE'],
-  ['daily', 'SOLVE FOR P'], ['curve', 'DAILY ESTIMATES'],
-  ['time', 'YOUR NEXT WEEK'], ['today', 'YOUR PLANS']
-];
-const methodPages = ['source', 'assumptions', 'deeper', 'boundaries', 'privacy'];
+let plannerOnly = false;
+let requestGeneration = 0;
+const chapters = ['start', 'working', 'odds', 'weeks', 'week'];
+const labels = ['THE QUESTION', 'THE WORKING', 'THE ODDS', 'A LIFE IN WEEKS', 'THIS WEEK'];
+const motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+let motion = !motionQuery.matches;
+let motionChosen = false;
+let beat = 0;
+let timer;
+let due = 0;
+let remaining = 3400;
+let paused = true;
+const beatDuration = 3400;
 
 function loadData() {
   if (!datasetPromise) datasetPromise = fetch('./data/ssa-2023.json', { cache: 'force-cache' })
@@ -32,173 +35,189 @@ function sliderStyle(input) {
 
 function setAgeError(message) {
   $('#age-error').textContent = message;
-  if (message) $('#age').setAttribute('aria-invalid', 'true');
-  else $('#age').removeAttribute('aria-invalid');
+  $('#age').setAttribute('aria-invalid', String(Boolean(message)));
 }
-
 $('#age').addEventListener('input', () => setAgeError(''));
 $('#age-form').addEventListener('submit', async event => {
   event.preventDefault();
   const validation = validateAge($('#age').value);
   if (!validation.valid) { setAgeError(validation.message); $('#age').focus(); return; }
   setAgeError('');
-  const button = $('#begin');
-  button.disabled = true;
-  $('#story-next').disabled = true;
-  button.setAttribute('aria-label', 'Loading the numbers');
+  const generation = ++requestGeneration;
+  $('#begin').disabled = true;
+  $('#age-form').setAttribute('aria-busy', 'true');
   try {
     dataset = await loadData();
-    currentAge = validation.age;
-    renderEstimate(currentAge);
-    showScreen('tomorrow');
-  } catch (error) {
-    setAgeError('The numbers didn’t load. Reload the page and try again.');
+    if (generation !== requestGeneration) return;
+    result = estimateByAge(dataset, validation.age);
+    plannerOnly = false;
+    renderEstimate();
+    showScreen('working');
+    startWalkthrough();
+  } catch {
+    if (generation !== requestGeneration) return;
+    setAgeError('The numbers didn’t load. Please try again.');
     $('#age').focus();
   } finally {
-    button.disabled = false;
-    $('#story-next').disabled = false;
-    button.setAttribute('aria-label', 'See the estimate');
+    $('#begin').disabled = false;
+    $('#age-form').removeAttribute('aria-busy');
   }
 });
 
-function renderEstimate(age) {
-  const result = estimateByAge(dataset, age);
-  $$('[data-age]').forEach(element => { element.textContent = age; });
+function renderEstimate() {
+  $$('[data-age]').forEach(node => { node.textContent = result.age; });
+  $('#annual-range').textContent = `${compactRange(result.annual.map(q => q * 100), 4)}%`;
   $('#daily-low').textContent = percent(result.daily[0]);
   $('#daily-high').textContent = percent(result.daily[1]);
-  $('#million-description').textContent = `About ${compactRange(result.daily.map(p => p * 1_000_000))} deaths per million people over one day.`;
-  $('#survival-percent').textContent = `${percent(result.survival[0], 3)}–${percent(result.survival[1], 3)}%`;
-  // Adaptive precision keeps the survival readout from displaying a misleading 100%.
-  if (percent(result.survival[0], 3) === percent(result.survival[1], 3)) {
-    $('#survival-percent').textContent = `${percent(result.survival[0])}–${percent(result.survival[1])}%`;
-  }
-  $('#next-age').textContent = age + 1;
-  $('#annual-range').textContent = `${compactRange(result.annual.map(p => p * 100), 4)}%`;
   $('#math-daily-range').textContent = `${percent(result.daily[0])}–${percent(result.daily[1])}%`;
-  $('#expectancy-note').textContent = `At exact age ${age}, these tables give an average of ${compactRange(result.remainingYears, 2)} remaining years if 2023 rates continued. That average doesn’t tell us how long you will live.`;
-  $('#chart-age').value = age;
-  dataPage = 0;
-  renderDataPage();
-  renderChart(age);
+  $('#million-range').textContent = compactRange(result.daily.map(p => p * 1_000_000));
+  $('#survival-percent').textContent = `${percent(result.survival[0])}–${percent(result.survival[1])}%`;
+  $('#inspect-age').value = result.age;
+  renderValues(result.age);
+  renderLifeGrid();
 }
-
-function svgElement(tag, attributes = {}, content) {
-  const element = document.createElementNS('http://www.w3.org/2000/svg', tag);
-  for (const [key, value] of Object.entries(attributes)) element.setAttribute(key, value);
-  if (content !== undefined) element.textContent = content;
-  return element;
-}
-
-function renderChart(age) {
-  const chart = $('#risk-chart');
-  chart.querySelectorAll('[data-chart]').forEach(node => node.remove());
-  const group = svgElement('g', { 'data-chart': '', 'aria-hidden': 'true' });
-  const box = { left: 52, top: 20, width: 584, height: 235 };
-  const yMax = 0.0015;
-  const x = a => box.left + ((a - 18) / 82) * box.width;
-  const y = p => box.top + box.height * (1 - p / yMax);
-  const textStyle = { fill: '#696966', 'font-size': 11, 'font-family': '-apple-system, BlinkMacSystemFont, sans-serif' };
-  [0, .0005, .001, .0015].forEach(p => {
-    group.append(svgElement('line', { x1: box.left, y1: y(p), x2: box.left + box.width, y2: y(p), stroke: '#dcdcd7', 'stroke-width': 1 }));
-    group.append(svgElement('text', { x: box.left - 10, y: y(p) + 4, 'text-anchor': 'end', ...textStyle }, `${(p * 100).toFixed(2)}%`));
-  });
-  [18, 40, 60, 80, 100].forEach(a => group.append(svgElement('text', { x: x(a), y: 282, 'text-anchor': 'middle', ...textStyle }, `${a}`)));
-  group.append(svgElement('text', { x: box.left, y: 9, ...textStyle, 'font-size': 9 }, 'DAILY RISK'));
-  group.append(svgElement('text', { x: box.left + box.width, y: 299, 'text-anchor': 'end', ...textStyle, 'font-size': 9 }, 'AGE'));
-  const paths = {};
-  for (const key of ['male', 'female']) paths[key] = dataset.rows.map(row => `${x(row.age)},${y(annualToDaily(row[key].qx))}`);
-  group.append(svgElement('path', { d: `M ${paths.male.join(' L ')} L ${[...paths.female].reverse().join(' L ')} Z`, fill: '#e7e7e0' }));
-  group.append(svgElement('path', { d: `M ${paths.male.join(' L ')}`, fill: 'none', stroke: '#171717', 'stroke-width': 2 }));
-  group.append(svgElement('path', { d: `M ${paths.female.join(' L ')}`, fill: 'none', stroke: '#777771', 'stroke-width': 2, 'stroke-dasharray': '5 4' }));
-  group.append(svgElement('line', { x1: x(age), x2: x(age), y1: box.top, y2: box.top + box.height, stroke: '#696966', 'stroke-width': 1, 'stroke-dasharray': '3 4' }));
-  const result = estimateByAge(dataset, age);
-  result.series.forEach(series => group.append(svgElement('circle', { cx: x(age), cy: y(series.daily), r: 4, fill: '#171717', stroke: '#fafaf7', 'stroke-width': 2 })));
-  chart.append(group);
-  $('#chart-age-value').textContent = age;
-  $('#chart-readout').textContent = `${percent(result.daily[0])}–${percent(result.daily[1])}% per day for people who have reached ${age}.`;
-  $('#chart-age').setAttribute('aria-valuetext', `Age ${age}. Daily chance of dying ${percent(result.daily[0])} to ${percent(result.daily[1])} percent.`);
-  sliderStyle($('#chart-age'));
-}
-
-$('#chart-age').addEventListener('input', event => renderChart(Number(event.target.value)));
 
 function showScreen(id, focus = true) {
-  const target = $(`[data-screen="${id}"]`);
-  if (!target) return;
-  const nextIndex = storyPages.findIndex(page => page[0] === id);
-  const previousIndex = storyPages.findIndex(page => page[0] === currentScreen);
-  $('#main').dataset.direction = nextIndex >= 0 && previousIndex >= 0 && nextIndex < previousIndex ? 'back' : 'next';
-  $$('[data-screen]').forEach(screen => { screen.hidden = screen !== target; });
+  if (!chapters.includes(id)) return;
+  if (['working', 'odds', 'weeks'].includes(id) && !result) return;
+  if (id !== 'working') stopTimer();
   currentScreen = id;
-  if (nextIndex >= 0) storyIndex = nextIndex;
-  const noteIndex = methodPages.indexOf(id);
-  const isExtra = noteIndex >= 0 || id === 'data';
-  $('#method-button').textContent = isExtra ? 'Back to story ↙' : 'How it works ↗';
-  $('#story-step').textContent = noteIndex >= 0 ? `${String(noteIndex + 1).padStart(2, '0')} / 05` : id === 'data' ? `${String(dataPage + 1).padStart(2, '0')} / 17` : `${String(storyIndex + 1).padStart(2, '0')} / 08`;
-  $('#story-label').textContent = noteIndex >= 0 ? 'HOW IT WORKS' : id === 'data' ? 'CHART VALUES' : storyPages[storyIndex][1];
-  $('#story-back').disabled = !isExtra && storyIndex === 0;
-  $('#next-label').textContent = id === 'start' ? 'Begin' : id === 'today' ? 'Another age' : id === 'data' || noteIndex === methodPages.length - 1 ? 'Return' : 'Next';
-  $('#story-progress').style.width = `${(storyIndex + 1) / storyPages.length * 100}%`;
-  if (focus) target.querySelector('h1, h2')?.focus({ preventScroll: true });
+  document.body.dataset.scene = id;
+  $('.header').inert = id !== 'start';
+  $$('[data-screen]').forEach(node => { node.hidden = node.dataset.screen !== id; });
+  const index = chapters.indexOf(id);
+  $('#story-step').textContent = `${String(index + 1).padStart(2, '0')} / 05`;
+  $('#story-label').textContent = plannerOnly && id === 'week' ? 'YOUR WEEK' : labels[index];
+  $$('.chapter-dots i').forEach((dot, i) => dot.classList.toggle('active', i === index));
+  $('#story-back').hidden = id === 'start';
+  $('#story-back').textContent = id === 'working' || id === 'odds' ? '← Edit age' : '← Back';
+  $('#story-next').hidden = id === 'start';
+  const next = { working: 'See result now', odds: 'Zoom out to weeks', weeks: 'Look at this week', week: 'Start again' };
+  $('#story-next').replaceChildren(document.createTextNode(`${next[id] || ''} `));
+  const arrow = document.createElement('span'); arrow.setAttribute('aria-hidden', 'true'); arrow.textContent = '→';
+  $('#story-next').append(arrow);
+  if (focus) $(`[data-screen="${id}"]`).querySelector('h1, h2').focus({ preventScroll: true });
 }
-
 function nextScreen() {
   if (currentScreen === 'start') { $('#age-form').requestSubmit(); return; }
-  if (currentScreen === 'data') { showScreen(returnScreen); return; }
-  const noteIndex = methodPages.indexOf(currentScreen);
-  if (noteIndex >= 0) { showScreen(methodPages[noteIndex + 1] || returnScreen); return; }
-  showScreen(storyPages[(storyIndex + 1) % storyPages.length][0]);
+  const next = { working: 'odds', odds: 'weeks', weeks: 'week', week: 'start' };
+  showScreen(next[currentScreen]);
 }
-
 function previousScreen() {
-  if (currentScreen === 'data') { showScreen(returnScreen); return; }
-  const noteIndex = methodPages.indexOf(currentScreen);
-  if (noteIndex >= 0) { showScreen(noteIndex ? methodPages[noteIndex - 1] : returnScreen); return; }
-  if (storyIndex > 0) showScreen(storyPages[storyIndex - 1][0]);
+  if (currentScreen === 'working' || currentScreen === 'odds') showScreen('start');
+  else if (currentScreen === 'weeks') showScreen('odds');
+  else if (currentScreen === 'week') showScreen(plannerOnly ? 'start' : 'weeks');
 }
-
 $('#story-next').addEventListener('click', nextScreen);
 $('#story-back').addEventListener('click', previousScreen);
-$$('[data-go]').forEach(button => button.addEventListener('click', () => showScreen(button.dataset.go)));
-$('#method-button').addEventListener('click', () => {
-  if (methodPages.includes(currentScreen) || currentScreen === 'data') showScreen(returnScreen);
-  else { returnScreen = currentScreen; showScreen('source'); }
-});
-document.addEventListener('keydown', event => {
-  if (event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) return;
-  if (event.key === 'Escape' && (methodPages.includes(currentScreen) || currentScreen === 'data')) { showScreen(returnScreen); return; }
-  if (['INPUT', 'TEXTAREA', 'BUTTON', 'A'].includes(event.target.tagName) || event.target.isContentEditable) return;
-  if (event.key === 'ArrowRight') { event.preventDefault(); nextScreen(); }
-  if (event.key === 'ArrowLeft') { event.preventDefault(); previousScreen(); }
-});
+$$('[data-home]').forEach(button => button.addEventListener('click', () => { requestGeneration++; showScreen('start'); }));
+$('#skip-mortality').addEventListener('click', () => { requestGeneration++; plannerOnly = true; showScreen('week'); });
 
-function renderDataPage() {
-  if (!dataset) return;
-  const rows = dataset.rows.slice(dataPage * 5, dataPage * 5 + 5);
-  $('#chart-table').replaceChildren(...rows.map(row => {
-    const tr = document.createElement('tr');
-    [row.age, `${percent(annualToDaily(row.female.qx))}%`, `${percent(annualToDaily(row.male.qx))}%`].forEach((value, index) => {
-      const cell = document.createElement(index === 0 ? 'th' : 'td');
-      if (index === 0) cell.scope = 'row';
-      cell.textContent = value;
-      tr.append(cell);
-    });
-    return tr;
-  }));
-  $('#data-caption').textContent = `Ages ${rows[0].age}–${rows.at(-1).age} · 2023 data`;
-  $('#data-page-count').textContent = `${dataPage + 1} / 17`;
-  $('#data-prev').disabled = dataPage === 0;
-  $('#data-next').disabled = dataPage === 16;
-  if (currentScreen === 'data') $('#story-step').textContent = `${String(dataPage + 1).padStart(2, '0')} / 17`;
+// The arithmetic is immediate. This timer paces the explanation, never a pretend calculation.
+function stopTimer() { clearTimeout(timer); timer = undefined; }
+function setBeat(value) {
+  beat = value;
+  $('#formula-stage').dataset.beat = value;
+  $$('[data-formula]').forEach(node => { node.hidden = Number(node.dataset.formula) !== value; });
+  $$('.math-steps li').forEach((node, i) => {
+    node.classList.toggle('active', i === value);
+    node.classList.toggle('complete', i < value);
+    if (i === value) node.setAttribute('aria-current', 'step'); else node.removeAttribute('aria-current');
+  });
+  $$('.beat-progress span').forEach((node, i) => { node.className = i === value ? 'active' : i < value ? 'complete' : ''; });
+  $('#math-counter').textContent = `${String(value + 1).padStart(2, '0')} / 03`;
+  $('#formula-label').textContent = ['THE YEARLY PROBABILITY', 'SURVIVAL, DAY AFTER DAY', 'THE DAILY PROBABILITY'][value];
 }
-$('#view-chart-data').addEventListener('click', () => {
-  returnScreen = 'curve';
-  dataPage = Math.floor((Number($('#chart-age').value) - 18) / 5);
-  renderDataPage();
-  showScreen('data');
+function scheduleBeat() {
+  stopTimer();
+  if (paused || !motion || currentScreen !== 'working' || $('#method-dialog').open) return;
+  due = performance.now() + remaining;
+  timer = setTimeout(() => {
+    if (paused || currentScreen !== 'working') return;
+    if (beat === 2) { showScreen('odds'); return; }
+    setBeat(beat + 1); remaining = beatDuration; scheduleBeat();
+  }, remaining);
+}
+function updatePlayback() {
+  $('.working-screen').classList.toggle('paused', paused);
+  $('#math-pause').textContent = paused ? 'Resume walkthrough ▷' : 'Pause walkthrough Ⅱ';
+  $('#math-pause').hidden = !motion;
+  $('#math-replay').hidden = !motion;
+}
+function startWalkthrough() {
+  stopTimer(); remaining = beatDuration; paused = !motion;
+  setBeat(motion ? 0 : 2); updatePlayback(); scheduleBeat();
+  $('.working-heading > .body-copy').textContent = motion ? 'Your result is ready. The walkthrough plays automatically. Pause or skip it anytime.' : 'Motion is off. Read the steps, then see your result.';
+  $('#math-announcement').textContent = motion ? 'The math walkthrough advances automatically. Pause it or see your result now. A complete transcript is available in Sources and math.' : 'Motion is off. All three steps are visible. Continue to your result when you’re ready.';
+}
+function pauseWalkthrough() {
+  if (paused) return;
+  remaining = Math.max(0, due - performance.now()); paused = true; stopTimer(); updatePlayback();
+}
+$('#math-pause').addEventListener('click', () => {
+  if (paused) { paused = false; updatePlayback(); scheduleBeat(); }
+  else pauseWalkthrough();
 });
-$('#data-prev').addEventListener('click', () => { if (dataPage > 0) { dataPage--; renderDataPage(); } });
-$('#data-next').addEventListener('click', () => { if (dataPage < 16) { dataPage++; renderDataPage(); } });
+$('#math-replay').addEventListener('click', startWalkthrough);
+$('#replay-from-result').addEventListener('click', () => { showScreen('working'); startWalkthrough(); });
+// No auto-advancing a hidden tab, and no surprise restart when the visitor returns.
+document.addEventListener('visibilitychange', () => { if (document.hidden && currentScreen === 'working') pauseWalkthrough(); });
+function applyMotion() {
+  document.body.dataset.motion = motion ? 'on' : 'off';
+  $('#motion-toggle').textContent = motion ? 'Motion on' : 'Motion off';
+  $('#motion-toggle').setAttribute('aria-label', 'Reduce motion');
+  $('#motion-toggle').setAttribute('aria-pressed', String(!motion));
+  if (currentScreen === 'working') {
+    pauseWalkthrough();
+    if (!motion) setBeat(2);
+    updatePlayback();
+  }
+}
+$('#motion-toggle').addEventListener('click', () => { motionChosen = true; motion = !motion; applyMotion(); });
+motionQuery.addEventListener('change', event => { if (!motionChosen) { motion = !event.matches; applyMotion(); } });
+applyMotion();
+
+function svgElement(tag, attributes = {}) {
+  const node = document.createElementNS('http://www.w3.org/2000/svg', tag);
+  for (const [key, value] of Object.entries(attributes)) node.setAttribute(key, value);
+  return node;
+}
+function renderLifeGrid() {
+  const weeks = lifeWeeks(result);
+  $('#remaining-weeks').textContent = compactRange(weeks.remaining, 0);
+  $('#remaining-years').textContent = compactRange(result.remainingYears, 1);
+  $('#life-end-label').textContent = 'HIGHER TABLE AVERAGE';
+  const grid = $('#life-grid');
+  grid.querySelectorAll('[data-grid]').forEach(node => node.remove());
+  const columns = 104, pitch = 7, size = 4.8;
+  const rows = Math.ceil(weeks.total / columns);
+  grid.setAttribute('viewBox', `0 0 ${columns * pitch} ${rows * pitch}`);
+  $('#life-grid-description').textContent = `Approximate weeks: ${weeks.lived} lived, ${weeks.remaining[0]} to ${weeks.remaining[1]} average weeks ahead in the two tables. One square is one week; each row is about two years. The endpoints compare means, not the bounds of a lifespan.`;
+  const defs = svgElement('defs', { 'data-grid': '' });
+  const pattern = svgElement('pattern', { id: 'week-hatch', width: 4, height: 4, patternUnits: 'userSpaceOnUse' });
+  pattern.append(svgElement('rect', { width: 4, height: 4, fill: '#e0ebe3' }), svgElement('path', { d: 'M-1 1L1-1M0 4L4 0M3 5L5 3', stroke: '#87ac9c', 'stroke-width': 1.3 }));
+  defs.append(pattern); grid.append(defs);
+  const group = svgElement('g', { 'data-grid': '', 'aria-hidden': 'true' });
+  for (let row = 0; row < rows; row++) {
+    const paths = ['', '', ''];
+    for (let col = 0; col < columns; col++) {
+      const index = row * columns + col;
+      if (index >= weeks.total) break;
+      const category = index < weeks.lived ? 0 : index < weeks.lived + weeks.remaining[0] ? 1 : 2;
+      paths[category] += `M${col * pitch},${row * pitch}h${size}v${size}h-${size}z`;
+    }
+    const rowGroup = svgElement('g', { class: 'life-row', style: `--row:${row}` });
+    paths.forEach((d, i) => { if (d) rowGroup.append(svgElement('path', { d, fill: ['#263a59', '#7da79b', 'url(#week-hatch)'][i] })); });
+    group.append(rowGroup);
+  }
+  const nowIndex = weeks.lived;
+  group.append(svgElement('rect', { x: (nowIndex % columns) * pitch - 1, y: Math.floor(nowIndex / columns) * pitch - 1, width: size + 2, height: size + 2, rx: 1, fill: '#dc492e', stroke: '#fff', 'stroke-width': 1 }));
+  grid.append(group);
+}
+const dayCells = Array.from({ length: 365 }, (_, i) => {
+  const cell = document.createElement('i'); cell.style.setProperty('--row', Math.floor(i / 73)); return cell;
+});
+$('#day-grid').replaceChildren(...dayCells);
 
 function renderBudget() {
   const inputs = { sleepPerNight: Number($('#sleep').value), workPerWeek: Number($('#work').value), carePerWeek: Number($('#care').value) };
@@ -206,55 +225,84 @@ function renderBudget() {
   $('#sleep-value').textContent = `${inputs.sleepPerNight} h / night`;
   $('#work-value').textContent = `${inputs.workPerWeek} h / week`;
   $('#care-value').textContent = `${inputs.carePerWeek} h / week`;
-  $('#sleep').setAttribute('aria-valuetext', `${inputs.sleepPerNight} hours per night`);
-  $('#work').setAttribute('aria-valuetext', `${inputs.workPerWeek} hours per week`);
-  $('#care').setAttribute('aria-valuetext', `${inputs.carePerWeek} hours per week`);
+  for (const [id, value, unit] of [['sleep', inputs.sleepPerNight, 'night'], ['work', inputs.workPerWeek, 'week'], ['care', inputs.carePerWeek, 'week']]) {
+    $(`#${id}`).setAttribute('aria-valuetext', `${value} hours per ${unit}`); sliderStyle($(`#${id}`));
+  }
   $('#open-hours').textContent = compactRange([budget.valid ? budget.open : budget.over, budget.valid ? budget.open : budget.over]);
-  $('#open-hours-label').textContent = budget.valid ? 'hours left' : 'hours over budget';
-  $('#budget-note').textContent = budget.valid ? (budget.open === 0 ? 'All 168 hours are filled. Check for overlap.' : 'What would you like to do with some of them?') : 'Over 168 hours. Reduce a slider or check for overlap.';
-  $('.time-total').classList.toggle('over-budget', !budget.valid);
+  $('#open-hours-label').textContent = budget.valid ? 'hours unallocated' : 'hours over budget';
+  $('#budget-note').textContent = budget.valid ? (budget.open === 0 ? 'All 168 hours are allocated. Check for overlap.' : 'These are starting values. Count each hour once.') : 'Over 168 hours. Reduce a slider or check for overlap. The grid stops at 168.';
+  $('#budget-note').classList.toggle('over', !budget.valid);
+  $('.budget-visual').classList.toggle('over-budget', !budget.valid);
+  const categories = [{ hours: budget.sleep, color: '#314864' }, { hours: budget.work, color: '#b6a4d9' }, { hours: budget.care, color: '#e5b479' }];
   const grid = $('#week-grid');
-  const categories = [{ key: 'sleep', hours: budget.sleep, color: '#252525' }, { key: 'work', hours: budget.work, color: '#8a8a83' }, { key: 'care', hours: budget.care, color: '#c8c8bf' }];
-  const cells = Array.from({ length: 168 }, (_, index) => {
-    const cell = document.createElement('span');
-    cell.className = 'hour-cell open';
-    cell.setAttribute('aria-hidden', 'true');
-    let start = 0;
-    const stops = [];
-    let hasOpen = false;
+  // Reuse cells so slider input doesn't replay the entrance animation 168 times.
+  if (!grid.children.length) grid.replaceChildren(...Array.from({ length: 168 }, (_, index) => {
+    const cell = document.createElement('span'); cell.className = 'hour-cell'; cell.setAttribute('aria-hidden', 'true'); cell.style.setProperty('--row', Math.floor(index / 24)); return cell;
+  }));
+  [...grid.children].forEach((cell, index) => {
+    let start = 0; const stops = [];
     for (const item of categories) {
       const end = start + item.hours;
-      const left = Math.max(index, start);
-      const right = Math.min(index + 1, end);
-      const coverage = Math.max(0, right - left);
-      if (coverage > 0) {
-        stops.push(`${item.color} ${(left - index) * 100}% ${(right - index) * 100}%`);
-      }
+      const left = Math.max(index, start), right = Math.min(index + 1, end);
+      if (right > left) stops.push(`${item.color} ${(left - index) * 100}% ${(right - index) * 100}%`);
       start = end;
     }
-    if (budget.allocated < index + 1) {
-      const left = Math.max(index, budget.allocated);
-      stops.push(`transparent ${(left - index) * 100}% 100%`);
-      hasOpen = true;
-    }
-    cell.className = `hour-cell${hasOpen ? ' open' : ''}`;
+    if (budget.allocated < index + 1) stops.push(`#f6dfc3 ${(Math.max(index, budget.allocated) - index) * 100}% 100%`);
     cell.style.background = `linear-gradient(to right, ${stops.join(', ')})`;
-    return cell;
   });
-  grid.replaceChildren(...cells);
-  grid.setAttribute('aria-label', `168-hour week: ${budget.sleep} hours sleep, ${budget.work} work and study, ${budget.care} essentials. ${budget.valid ? `${budget.open} hours left.` : `Over budget by ${budget.over} hours; the grid is capped at 168.`}`);
-  for (const id of ['sleep', 'work', 'care']) sliderStyle(document.getElementById(id));
+  grid.setAttribute('aria-label', `168-hour week: ${budget.sleep} hours sleep, ${budget.work} work and study, ${budget.care} essentials. ${budget.valid ? `${budget.open} hours unallocated.` : `Over budget by ${budget.over} hours. Grid capped at 168.`}`);
 }
-for (const id of ['sleep', 'work', 'care']) document.getElementById(id).addEventListener('input', renderBudget);
+['sleep', 'work', 'care'].forEach(id => $(`#${id}`).addEventListener('input', renderBudget));
+$('#intention-form').addEventListener('submit', event => {
+  event.preventDefault();
+  const intention = $('#intention').value.trim();
+  $('#intention-result').textContent = intention ? `This week: ${intention}. Take that thought with you. It isn’t saved.` : 'Write one thing you’d like to make time for.';
+  if (!intention) $('#intention').focus();
+});
+
+function renderValues(age) {
+  const comparison = estimateByAge(dataset, age);
+  $('#values-content').hidden = false; $('#values-hint').hidden = true;
+  $('#inspect-age-value').textContent = age;
+  $('#values-caption').textContent = `Exact age ${age} · SSA 2023 period life table`;
+  $('#source-values').replaceChildren(...comparison.series.map(item => {
+    const row = document.createElement('tr');
+    [item.key === 'female' ? 'Female' : 'Male', item.annual.toFixed(6), item.daily.toPrecision(7), item.remainingYears.toFixed(2)].forEach((value, i) => {
+      const cell = document.createElement(i ? 'td' : 'th'); if (!i) cell.scope = 'row'; cell.textContent = value; row.append(cell);
+    }); return row;
+  }));
+  $('#inspect-age').setAttribute('aria-valuetext', `Age ${age}`); sliderStyle($('#inspect-age'));
+}
+$('#inspect-age').addEventListener('input', event => { if (dataset) renderValues(Number(event.target.value)); });
+function selectTab(name, focus = false) {
+  $$('.method-tabs [role="tab"]').forEach(tab => { const selected = tab.dataset.tab === name; tab.setAttribute('aria-selected', String(selected)); tab.tabIndex = selected ? 0 : -1; if (selected && focus) tab.focus(); });
+  $$('[data-panel]').forEach(panel => { panel.hidden = panel.dataset.panel !== name; });
+}
+function openMethod(name) {
+  if (currentScreen === 'working') pauseWalkthrough();
+  selectTab(name);
+  $('#method-dialog').showModal();
+  $('#close-method').focus();
+}
+$$('[data-method]').forEach(button => button.addEventListener('click', () => openMethod(button.dataset.method)));
+$('#close-method').addEventListener('click', () => $('#method-dialog').close());
+$$('[data-tab]').forEach(tab => tab.addEventListener('click', () => selectTab(tab.dataset.tab)));
+$('.method-tabs').addEventListener('keydown', event => {
+  const tabs = $$('[data-tab]'); const current = tabs.indexOf(event.target);
+  if (current < 0) return;
+  const offsets = { ArrowRight: 1, ArrowLeft: -1 };
+  let index;
+  if (event.key in offsets) index = (current + offsets[event.key] + tabs.length) % tabs.length;
+  else if (event.key === 'Home') index = 0;
+  else if (event.key === 'End') index = tabs.length - 1;
+  else return;
+  event.preventDefault(); selectTab(tabs[index].dataset.tab, true);
+});
+document.addEventListener('keydown', event => {
+  if ($('#method-dialog').open || event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) return;
+  if (['INPUT', 'TEXTAREA', 'BUTTON', 'A'].includes(event.target.tagName) || event.target.isContentEditable) return;
+  if (event.key === 'ArrowRight') { event.preventDefault(); nextScreen(); }
+  if (event.key === 'ArrowLeft') { event.preventDefault(); previousScreen(); }
+});
 renderBudget();
-
-function setIntention() {
-  const value = $('#intention').value.trim();
-  $('#intention-result').textContent = value ? `This week: ${value}` : 'Write something above, or pick an idea.';
-  $$('[data-intention]').forEach(button => button.setAttribute('aria-pressed', String(button.dataset.intention === value)));
-}
-$('#set-intention').addEventListener('click', setIntention);
-$('#intention').addEventListener('keydown', event => { if (event.key === 'Enter') { event.preventDefault(); setIntention(); } });
-$$('[data-intention]').forEach(button => button.addEventListener('click', () => { $('#intention').value = button.dataset.intention; setIntention(); }));
-
 showScreen('start', false);

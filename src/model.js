@@ -51,6 +51,16 @@ export function weeklyBudget({ sleepPerNight, workPerWeek, carePerWeek }) {
   return { sleep, work: workPerWeek, care: carePerWeek, allocated, open: Math.max(0, 168 - allocated), over: Math.max(0, allocated - 168), valid: allocated <= 168 };
 }
 
+/** A week-grid illustration of two conditional means, never a lifespan boundary. */
+export function lifeWeeks(result) {
+  const age = validateAge(result.age);
+  const years = result.remainingYears;
+  if (!age.valid || !Array.isArray(years) || years.length !== 2 || years.some(n => !Number.isFinite(n) || n <= 0) || years[0] > years[1]) throw new RangeError('Expected an age and ordered positive remaining-year means.');
+  const lived = age.age * 52;
+  const remaining = years.map(n => Math.round(n * 52));
+  return { lived, remaining, total: lived + remaining[1], weeksPerYear: 52 };
+}
+
 export function percent(value, digits = 5) {
   return (value * 100).toLocaleString('en-US', { minimumFractionDigits: digits, maximumFractionDigits: digits, useGrouping: false });
 }

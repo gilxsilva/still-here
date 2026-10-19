@@ -6,7 +6,7 @@ What are the odds I die tomorrow?
 
 I’m taking a probability class, and a Reel about having “9,000 days left” got me wondering what the numbers actually say.
 
-This is a small website to work through that question. Enter your age, see the daily estimate, and follow the math. Then take a look at how you spend a week.
+This is a small website to work through that question. Enter your age and watch the working unfold. See the daily estimate, zoom out to a life in weeks, then take a look at how you spend your next one.
 
 ## Run it
 
@@ -16,7 +16,7 @@ You need Node.js 20 or later. There’s nothing to install.
 npm start
 ```
 
-Open http://127.0.0.1:4173. Use Next and Back to move through the screens. Your inputs stay in place as you go.
+Open http://127.0.0.1:4173. Enter an age to start. The math walkthrough plays automatically and can be paused, replayed, or skipped. The rest moves one view at a time, without scrolling. Motion off gives you a static version. Your inputs stay in place as you go.
 
 ```sh
 npm run build  # Make a standalone HTML file
@@ -42,12 +42,21 @@ At age 25, the two tables give about **0.00017%–0.00044% per day**, or **1.7�
 
 The range compares the female and male tables, so the first version can ask for age alone. It isn’t a confidence interval or a personal prediction. We use age at last birthday to choose a row and leave out health, behavior, seasons, leap years, and the timing of the next birthday. The full assumptions are in the app’s “How it works” pages.
 
+The life-in-weeks grid uses each table’s average remaining years at the entered age, multiplied by 52 and rounded. It compares two means, not two bounds on your lifespan. It does not subtract your age from life expectancy at birth.
+
 The weekly sliders are a separate exercise. Their defaults are starting values, not population averages. Change them to match your week.
+
+## The design
+
+Five views: your age, the working, the odds, a life in weeks, and this week. A short note introduces the sensitive topic; anyone can skip straight to the weekly planner. The header steps aside after age entry. Blue, green, and warmer colors give each part its own feel.
+
+[Research and design review](docs/research-and-review.md) covers the audience hypotheses, design decisions, sources, browser checks, and what still needs real-user testing.
 
 ## What’s in the repo
 
 - `src/`: the pages, styles, calculations, and pinned source data.
 - `scripts/`: the build and local preview.
+- `docs/`: research, design decisions, and the self-review.
 - `tests/`: checks for the calculations, source values, and HTML export.
 - `vercel.json`: the public site's build settings and response headers.
 - `.openai/hosting.json`: the optional Sites hosting configuration.

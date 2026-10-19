@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
-import { validateAge, validateDataset, annualToDaily, estimateByAge, weeklyBudget, percent } from '../src/model.js';
+import { validateAge, validateDataset, annualToDaily, estimateByAge, weeklyBudget, lifeWeeks, percent } from '../src/model.js';
 const dataset = validateDataset(JSON.parse(await readFile(new URL('../src/data/ssa-2023.json', import.meta.url), 'utf8')));
 
 test('supported ages include both boundaries and reject incomplete or nonsensical entries', () => {
@@ -62,4 +62,19 @@ test('the weekly budget respects 168 hours, fractional sleep, zero remaining, an
   const over = weeklyBudget({ sleepPerNight: 12, workPerWeek: 100, carePerWeek: 100 });
   assert.equal(over.valid, false); assert.equal(over.over, 116); assert.equal(over.open, 0);
   assert.throws(() => weeklyBudget({ sleepPerNight: NaN, workPerWeek: 40, carePerWeek: 21 }), RangeError);
+});
+
+test('weeks use age-conditional remaining years, including visitors older than life expectancy at birth', () => {
+  const at25 = lifeWeeks(estimateByAge(dataset, 25));
+  assert.deepEqual(at25, { lived: 1300, remaining: [2707, 2959], total: 4259, weeksPerYear: 52 });
+  const at100 = lifeWeeks(estimateByAge(dataset, 100));
+  assert.equal(at100.lived, 5200);
+  assert.deepEqual(at100.remaining, [106, 116]);
+  assert.equal(at100.total, 5316);
+  for (const row of dataset.rows) {
+    const weeks = lifeWeeks(estimateByAge(dataset, row.age));
+    assert.ok(weeks.remaining[0] > 0 && weeks.remaining[1] >= weeks.remaining[0]);
+    assert.equal(weeks.total - weeks.lived, weeks.remaining[1]);
+  }
+  for (const remainingYears of [[-1, 2], [2, 1], [1, NaN], [1], undefined]) assert.throws(() => lifeWeeks({ age: 25, remainingYears }), RangeError);
 });
