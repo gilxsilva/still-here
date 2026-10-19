@@ -1,5 +1,7 @@
 # Still Here
 
+[Try the website](https://still-here-theta-coral.vercel.app)
+
 What are the odds I die tomorrow?
 
 I’m taking a probability class, and a Reel about having “9,000 days left” got me wondering what the numbers actually say.
@@ -23,6 +25,8 @@ npm run check  # Check syntax and run the tests
 
 The build creates `dist/index.html`. You can open that file directly, without a server or an internet connection. Rebuild after changing the source. `PORT=4180 npm start` uses a different preview port.
 
+The public site runs on Vercel. Pushes to `main` run the checks, build the page, and deploy it. The GitHub repository stays private.
+
 ## The math
 
 The numbers come from the [SSA’s 2023 period life table](https://www.ssa.gov/oact/STATS/table4c6.html), used in the 2026 Trustees Report and retrieved October 18, 2026. It covers the U.S.-based Social Security area population; the source lists everyone included.
@@ -45,6 +49,7 @@ The weekly sliders are a separate exercise. Their defaults are starting values, 
 - `src/`: the pages, styles, calculations, and pinned source data.
 - `scripts/`: the build and local preview.
 - `tests/`: checks for the calculations, source values, and HTML export.
+- `vercel.json`: the public site's build settings and response headers.
 - `.openai/hosting.json`: the optional Sites hosting configuration.
 
 `dist/` is generated and stays out of Git, along with local review notes, logs, secrets, and dependency folders. Keep the source data and tests tracked so someone else can check the result.
