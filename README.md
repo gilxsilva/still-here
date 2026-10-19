@@ -42,10 +42,10 @@ The weekly sliders are a separate exercise. Their defaults are starting values, 
 
 ## What’s in the repo
 
-- `src/` — the pages, styles, calculations, and pinned source data.
-- `scripts/` — the build and local preview.
-- `tests/` — checks for the calculations, source values, and HTML export.
-- `.openai/hosting.json` — the optional Sites hosting configuration.
+- `src/`: the pages, styles, calculations, and pinned source data.
+- `scripts/`: the build and local preview.
+- `tests/`: checks for the calculations, source values, and HTML export.
+- `.openai/hosting.json`: the optional Sites hosting configuration.
 
 `dist/` is generated and stays out of Git, along with local review notes, logs, secrets, and dependency folders. Keep the source data and tests tracked so someone else can check the result.
 
@@ -55,4 +55,4 @@ Your age, slider settings, and final answer stay in browser memory. The app does
 
 Eventually I’d like to try more inputs: where someone lives, maybe even what they ate yesterday. Those questions need evidence before they change the estimate.
 
-For the writing, keep it close to the original question. Explain the math like you’re talking to someone in class. Use actual numbers. Skip the slogans.
+For the writing, keep it close to the original question. Explain the math like you’re talking to someone in class. Use actual numbers. Skip the slogans. Use commas, periods, or colons instead of long dashes.

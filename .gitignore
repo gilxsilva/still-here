@@ -14,6 +14,7 @@ node_modules/
 
 # Local hosting state and review notes
 .sites/
+.vercel/
 /QA.md
 
 # Operating system files
