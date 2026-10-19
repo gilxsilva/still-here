@@ -3,11 +3,11 @@ export const MODEL = Object.freeze({ id: 'age-only-constant-hazard-v1', daysPerY
 
 export function validateAge(value) {
   if (value === '' || value === null || value === undefined || typeof value === 'boolean' || (typeof value === 'string' && !value.trim())) {
-    return { valid: false, message: 'Enter your age as a whole number from 18 to 100.' };
+    return { valid: false, message: 'Enter your age, from 18 to 100.' };
   }
   const age = Number(value);
   if (!Number.isInteger(age) || age < MODEL.minAge || age > MODEL.maxAge) {
-    return { valid: false, message: 'Use a whole-number age from 18 to 100 for this prototype.' };
+    return { valid: false, message: 'Enter a whole number from 18 to 100.' };
   }
   return { valid: true, age };
 }

@@ -1,7 +1,21 @@
+# Dependencies and generated output
 node_modules/
-.DS_Store
-.env
-.env.*
-.sites/
+/dist/
+/coverage/
+/test-results/
+/playwright-report/
 *.zip
 *.log
+
+# Local secrets; keep example configuration available to Git
+.env
+.env.*
+!.env.example
+
+# Local hosting state and review notes
+.sites/
+/QA.md
+
+# Operating system files
+.DS_Store
+Thumbs.db

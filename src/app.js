@@ -10,10 +10,10 @@ let returnScreen = 'start';
 let storyIndex = 0;
 let dataPage = 0;
 const storyPages = [
-  ['start', 'A LITTLE PERSPECTIVE'], ['tomorrow', 'THE ODDS'],
-  ['annual', 'START WITH A YEAR'], ['assumption', 'ONE ASSUMPTION'],
-  ['daily', 'SOLVE FOR ONE DAY'], ['curve', 'A LONGER VIEW'],
-  ['time', 'YOUR NEXT WEEK'], ['today', 'ONE GOOD HOUR']
+  ['start', 'THE QUESTION'], ['tomorrow', 'THE ODDS'],
+  ['annual', 'START WITH A YEAR'], ['assumption', 'ONE DAILY RATE'],
+  ['daily', 'SOLVE FOR P'], ['curve', 'DAILY ESTIMATES'],
+  ['time', 'YOUR NEXT WEEK'], ['today', 'YOUR PLANS']
 ];
 const methodPages = ['source', 'assumptions', 'deeper', 'boundaries', 'privacy'];
 
@@ -45,19 +45,19 @@ $('#age-form').addEventListener('submit', async event => {
   const button = $('#begin');
   button.disabled = true;
   $('#story-next').disabled = true;
-  button.setAttribute('aria-label', 'Loading the published mortality table');
+  button.setAttribute('aria-label', 'Loading the numbers');
   try {
     dataset = await loadData();
     currentAge = validation.age;
     renderEstimate(currentAge);
     showScreen('tomorrow');
   } catch (error) {
-    setAgeError('The data couldn’t load. Check your connection, then try again.');
+    setAgeError('The numbers didn’t load. Reload the page and try again.');
     $('#age').focus();
   } finally {
     button.disabled = false;
     $('#story-next').disabled = false;
-    button.setAttribute('aria-label', 'Explore my age-based estimate');
+    button.setAttribute('aria-label', 'See the estimate');
   }
 });
 
@@ -75,7 +75,7 @@ function renderEstimate(age) {
   $('#next-age').textContent = age + 1;
   $('#annual-range').textContent = `${compactRange(result.annual.map(p => p * 100), 4)}%`;
   $('#math-daily-range').textContent = `${percent(result.daily[0])}–${percent(result.daily[1])}%`;
-  $('#expectancy-note').textContent = `At exact age ${age}, average remaining life expectancy in these tables is ${compactRange(result.remainingYears, 2)} years under fixed 2023 rates. This already accounts for reaching ${age}. An average is not a deadline or a personal prediction.`;
+  $('#expectancy-note').textContent = `At exact age ${age}, these tables give an average of ${compactRange(result.remainingYears, 2)} remaining years if 2023 rates continued. That average doesn’t tell us how long you will live.`;
   $('#chart-age').value = age;
   dataPage = 0;
   renderDataPage();
@@ -115,8 +115,8 @@ function renderChart(age) {
   result.series.forEach(series => group.append(svgElement('circle', { cx: x(age), cy: y(series.daily), r: 4, fill: '#171717', stroke: '#fafaf7', 'stroke-width': 2 })));
   chart.append(group);
   $('#chart-age-value').textContent = age;
-  $('#chart-readout').textContent = `${percent(result.daily[0])}–${percent(result.daily[1])}% per day, conditional on reaching ${age}.`;
-  $('#chart-age').setAttribute('aria-valuetext', `Age ${age}. Daily mortality estimate ${percent(result.daily[0])} to ${percent(result.daily[1])} percent.`);
+  $('#chart-readout').textContent = `${percent(result.daily[0])}–${percent(result.daily[1])}% per day for people who have reached ${age}.`;
+  $('#chart-age').setAttribute('aria-valuetext', `Age ${age}. Daily chance of dying ${percent(result.daily[0])} to ${percent(result.daily[1])} percent.`);
   sliderStyle($('#chart-age'));
 }
 
@@ -133,11 +133,11 @@ function showScreen(id, focus = true) {
   if (nextIndex >= 0) storyIndex = nextIndex;
   const noteIndex = methodPages.indexOf(id);
   const isExtra = noteIndex >= 0 || id === 'data';
-  $('#method-button').textContent = isExtra ? 'Back to story ↙' : 'The method ↗';
+  $('#method-button').textContent = isExtra ? 'Back to story ↙' : 'How it works ↗';
   $('#story-step').textContent = noteIndex >= 0 ? `${String(noteIndex + 1).padStart(2, '0')} / 05` : id === 'data' ? `${String(dataPage + 1).padStart(2, '0')} / 17` : `${String(storyIndex + 1).padStart(2, '0')} / 08`;
-  $('#story-label').textContent = noteIndex >= 0 ? 'THE METHOD' : id === 'data' ? 'CHART VALUES' : storyPages[storyIndex][1];
+  $('#story-label').textContent = noteIndex >= 0 ? 'HOW IT WORKS' : id === 'data' ? 'CHART VALUES' : storyPages[storyIndex][1];
   $('#story-back').disabled = !isExtra && storyIndex === 0;
-  $('#next-label').textContent = id === 'start' ? 'Begin' : id === 'today' ? 'Start again' : id === 'data' || noteIndex === methodPages.length - 1 ? 'Return' : 'Next';
+  $('#next-label').textContent = id === 'start' ? 'Begin' : id === 'today' ? 'Another age' : id === 'data' || noteIndex === methodPages.length - 1 ? 'Return' : 'Next';
   $('#story-progress').style.width = `${(storyIndex + 1) / storyPages.length * 100}%`;
   if (focus) target.querySelector('h1, h2')?.focus({ preventScroll: true });
 }
@@ -185,7 +185,7 @@ function renderDataPage() {
     });
     return tr;
   }));
-  $('#data-caption').textContent = `Ages ${rows[0].age}–${rows.at(-1).age} · 2023 rates held fixed`;
+  $('#data-caption').textContent = `Ages ${rows[0].age}–${rows.at(-1).age} · 2023 data`;
   $('#data-page-count').textContent = `${dataPage + 1} / 17`;
   $('#data-prev').disabled = dataPage === 0;
   $('#data-next').disabled = dataPage === 16;
@@ -210,8 +210,8 @@ function renderBudget() {
   $('#work').setAttribute('aria-valuetext', `${inputs.workPerWeek} hours per week`);
   $('#care').setAttribute('aria-valuetext', `${inputs.carePerWeek} hours per week`);
   $('#open-hours').textContent = compactRange([budget.valid ? budget.open : budget.over, budget.valid ? budget.open : budget.over]);
-  $('#open-hours-label').textContent = budget.valid ? 'hours unallocated' : 'hours over budget';
-  $('#budget-note').textContent = budget.valid ? (budget.open === 0 ? 'Every hour is accounted for. Rest can matter wherever you find it.' : 'Room for rest, people, or a small beginning.') : 'Over 168 hours. Reduce a slider or check for overlap.';
+  $('#open-hours-label').textContent = budget.valid ? 'hours left' : 'hours over budget';
+  $('#budget-note').textContent = budget.valid ? (budget.open === 0 ? 'All 168 hours are filled. Check for overlap.' : 'What would you like to do with some of them?') : 'Over 168 hours. Reduce a slider or check for overlap.';
   $('.time-total').classList.toggle('over-budget', !budget.valid);
   const grid = $('#week-grid');
   const categories = [{ key: 'sleep', hours: budget.sleep, color: '#252525' }, { key: 'work', hours: budget.work, color: '#8a8a83' }, { key: 'care', hours: budget.care, color: '#c8c8bf' }];
@@ -242,7 +242,7 @@ function renderBudget() {
     return cell;
   });
   grid.replaceChildren(...cells);
-  grid.setAttribute('aria-label', `168-hour week: ${budget.sleep} hours sleep, ${budget.work} work and study, ${budget.care} essentials. ${budget.valid ? `${budget.open} hours unallocated.` : `Over budget by ${budget.over} hours; the grid is capped at 168.`}`);
+  grid.setAttribute('aria-label', `168-hour week: ${budget.sleep} hours sleep, ${budget.work} work and study, ${budget.care} essentials. ${budget.valid ? `${budget.open} hours left.` : `Over budget by ${budget.over} hours; the grid is capped at 168.`}`);
   for (const id of ['sleep', 'work', 'care']) sliderStyle(document.getElementById(id));
 }
 for (const id of ['sleep', 'work', 'care']) document.getElementById(id).addEventListener('input', renderBudget);
@@ -250,7 +250,7 @@ renderBudget();
 
 function setIntention() {
   const value = $('#intention').value.trim();
-  $('#intention-result').textContent = value ? `One good hour for: ${value}. That’s a place to start.` : 'A quiet hour with no plan counts, too.';
+  $('#intention-result').textContent = value ? `This week: ${value}` : 'Write something above, or pick an idea.';
   $$('[data-intention]').forEach(button => button.setAttribute('aria-pressed', String(button.dataset.intention === value)));
 }
 $('#set-intention').addEventListener('click', setIntention);

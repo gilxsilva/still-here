@@ -1,8 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
-import { validateAge, validateDataset, annualToDaily, estimateByAge, weeklyBudget, percent } from '../dist/model.js';
-const dataset = validateDataset(JSON.parse(await readFile(new URL('../dist/data/ssa-2023.json', import.meta.url), 'utf8')));
+import { validateAge, validateDataset, annualToDaily, estimateByAge, weeklyBudget, percent } from '../src/model.js';
+const dataset = validateDataset(JSON.parse(await readFile(new URL('../src/data/ssa-2023.json', import.meta.url), 'utf8')));
 
 test('supported ages include both boundaries and reject incomplete or nonsensical entries', () => {
   for (const value of [18, 25, '100']) assert.equal(validateAge(value).valid, true);
